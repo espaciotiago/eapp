@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">eapp</string>
+    <string name="login">Iniciar Sesion</string>
+    <string name="signup">Registrar un nuevo usuario</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="inventory">Inventario</string>
 </resources>

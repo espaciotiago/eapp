@@ -3,6 +3,9 @@ package com.ufo.mobile.eapp;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import java.util.List;
 
@@ -19,19 +22,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Get the database session
         daoSession = ((DaoApp)getApplication()).getDaoSession();
-        //TODO Test login
-        List<UserSession> sessions = daoSession.getUserSessionDao().loadAll();
-        if(sessions.isEmpty()) {
 
-            UserSession userSession = new UserSession();
-            userSession.setName("Santiago Moreno");
-            userSession.setUsername("smoreno");
-            userSession.setPassword("123");
-            ((DaoApp) getApplication()).getDaoSession().getUserSessionDao().insert(userSession);
-        }else{
-            UserSession userSession = sessions.get(0);
-            Log.e("USER",userSession.getName());
-        }
+        //UI Elemnts
+
+
+        //Set the UI
+        getSupportActionBar().setTitle(R.string.inventory);
     }
 }
