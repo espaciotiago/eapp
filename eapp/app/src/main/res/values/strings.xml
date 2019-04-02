@@ -1,8 +1,15 @@
 <resources>
     <string name="app_name">eapp</string>
     <string name="login">Iniciar Sesion</string>
+    <string name="signup_btn">Registrar</string>
     <string name="signup">Registrar un nuevo usuario</string>
     <string name="username">Nombre de usuario</string>
     <string name="password">Contraseña</string>
+    <string name="identification">Ficha de usuario</string>
+    <string name="name">Nombre completo</string>
+    <string name="area">Area</string>
+    <string name="section">Sección</string>
     <string name="inventory">Inventario</string>
+    <string name="fill_the_fields">Por favor complete todos los campos para continuar</string>
+    <string name="authentication_failed">Lo sentimos, el nombre de usuario o la contraseña no coinciden</string>
 </resources>
