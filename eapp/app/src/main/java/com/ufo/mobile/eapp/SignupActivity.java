@@ -8,6 +8,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Date;
+
 import ModelManager.DaoSession;
 import ModelManager.User;
 import Utils.Constants;
@@ -77,6 +79,7 @@ public class SignupActivity extends AppCompatActivity {
             user.setUsername(username);
             user.setPassword(password);
             user.setType(User.ADMIN_USER);
+            user.setCreationDate(new Date());
             daoSession.getUserDao().insert(user);
 
             onBackPressed();
