@@ -6,4 +6,9 @@
     <color name="colorAccentDark">#ababab</color>
     <color name="black_overlay">#66000000</color>
     <color name="colorWhite">#ffff</color>
+    <color name="colorSoftGray">#f4f4f4</color>
+    <color name="colorPrimarySoft">#b47c89f5</color>
+    <color name="colorYellow">#FCF176</color>
+    <color name="colorRed">#F2302F</color>
+    <color name="colorGreen">#21CE99</color>
 </resources>

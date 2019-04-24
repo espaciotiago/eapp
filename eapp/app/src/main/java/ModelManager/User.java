@@ -5,6 +5,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.Date;
+
 @Entity(nameInDb = "user")
 public class User {
 
@@ -24,14 +26,15 @@ public class User {
     @Property(nameInDb = "type")
     private int type;
     @Property(nameInDb = "area")
-    private int area;
+    private String area;
     @Property(nameInDb = "section")
-    private int section;
+    private String section;
     @Property(nameInDb = "image")
-    private int image;
-    @Generated(hash = 485511572)
+    private String image;
+    @Property(nameInDb = "creationDate")
+    private Date creationDate;
     public User(Long id, String username, String password, String identification,
-            String name, int type, int area, int section, int image) {
+            String name, int type, String area, String section, String image) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -42,8 +45,22 @@ public class User {
         this.section = section;
         this.image = image;
     }
-    @Generated(hash = 586692638)
     public User() {
+    }
+    @Generated(hash = 1612014610)
+    public User(Long id, String username, String password, String identification,
+            String name, int type, String area, String section, String image,
+            Date creationDate) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.identification = identification;
+        this.name = name;
+        this.type = type;
+        this.area = area;
+        this.section = section;
+        this.image = image;
+        this.creationDate = creationDate;
     }
     public Long getId() {
         return this.id;
@@ -81,23 +98,28 @@ public class User {
     public void setType(int type) {
         this.type = type;
     }
-    public int getArea() {
+    public String getArea() {
         return this.area;
     }
-    public void setArea(int area) {
+    public void setArea(String area) {
         this.area = area;
     }
-    public int getSection() {
+    public String getSection() {
         return this.section;
     }
-    public void setSection(int section) {
+    public void setSection(String section) {
         this.section = section;
     }
-    public int getImage() {
+    public String getImage() {
         return this.image;
     }
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
-
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
 }
