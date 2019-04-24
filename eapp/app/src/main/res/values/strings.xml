@@ -39,4 +39,5 @@
     <string name="authentication_failed">Lo sentimos, el nombre de usuario o la contraseña no coinciden</string>
     <string name="default_error">Lo sentimos, ha ocurrido un error, por favor contacte a soporte técnico</string>
     <string name="qty_error">Lo sentimos, la cantidad solicitada no puede ser mayor que la cantidad en inventario</string>
+    <string name="charts">Indicadores</string>
 </resources>

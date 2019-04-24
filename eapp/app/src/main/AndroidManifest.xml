@@ -57,9 +57,13 @@
             android:name=".SignatureActivity"
             android:label="@string/sign"
             android:screenOrientation="landscape" />
-        <activity android:name=".OrdersActivity"
-            android:screenOrientation="landscape"
-            android:label="@string/list"></activity>
+        <activity
+            android:name=".OrdersActivity"
+            android:label="@string/list"
+            android:screenOrientation="landscape" />
+        <activity android:name=".ChartsActivity"
+            android:label="@string/charts"
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>
