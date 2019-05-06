@@ -13,6 +13,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,7 +39,7 @@ import ModelManager.UserDao;
 import Utils.Constants;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.ufo.mobile.eapp.MainActivity.RESULT_LOAD_IMG;
+import static com.ufo.mobile.eapp.MainActivity.RESULT_LOAD_IMG_USER;
 
 public class NewOrderActivity extends AppCompatActivity {
 
@@ -118,7 +120,10 @@ public class NewOrderActivity extends AppCompatActivity {
                         setRecycler(users);
                     }
                 });
+                createUserDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                createUserDialog.setContentView(R.layout.dialog_create_user);
                 createUserDialog.setCanceledOnTouchOutside(false);
+                createUserDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
                 createUserDialog.show();
             }
         });
@@ -159,7 +164,7 @@ public class NewOrderActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Activity.RESULT_OK)
             switch (requestCode){
-                case RESULT_LOAD_IMG:
+                case RESULT_LOAD_IMG_USER:
                     Uri selectedImage = data.getData();
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);

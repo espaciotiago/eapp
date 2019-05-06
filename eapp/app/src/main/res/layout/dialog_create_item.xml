@@ -2,16 +2,30 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/transparent"
     android:focusableInTouchMode="true"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:padding="8dp"
+    android:layout_gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:background="@android:color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="400dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
@@ -37,31 +51,42 @@
                 android:textSize="24dp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:layout_marginTop="8dp"
-                android:id="@+id/edit_reference"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/shape_white"
-                android:ems="10"
-                android:hint="@string/item_reference"
-                android:padding="8dp" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <EditText
-                android:layout_marginTop="8dp"
-                android:id="@+id/edit_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/shape_white"
-                android:ems="10"
-                android:hint="@string/item_name"
-                android:padding="8dp" />
+                <EditText
+                    android:id="@+id/edit_reference"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_white"
+                    android:ems="10"
+                    android:hint="@string/item_reference"
+                    android:padding="8dp" />
+
+                <EditText
+                    android:id="@+id/edit_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_white"
+                    android:ems="10"
+                    android:hint="@string/item_name"
+                    android:padding="8dp" />
+
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/edit_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/shape_white"
                 android:ems="10"
                 android:gravity="start"
@@ -70,29 +95,75 @@
                 android:minLines="5"
                 android:padding="8dp" />
 
-            <EditText
-                android:id="@+id/edit_stock"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <LinearLayout
                 android:layout_marginTop="8dp"
-                android:background="@drawable/shape_white"
-                android:ems="10"
-                android:hint="@string/stock_label"
-                android:inputType="numberDecimal"
-                android:padding="8dp" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/edit_qty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/shape_white"
-                android:ems="10"
-                android:hint="@string/default_qty_label"
-                android:inputType="numberDecimal"
-                android:padding="8dp" />
+                <EditText
+                    android:id="@+id/edit_stock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_white"
+                    android:ems="10"
+                    android:hint="@string/stock_label"
+                    android:inputType="numberDecimal"
+                    android:padding="8dp" />
+
+                <EditText
+                    android:id="@+id/edit_qty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_white"
+                    android:ems="10"
+                    android:hint="@string/default_qty_label"
+                    android:inputType="numberDecimal"
+                    android:padding="8dp" />
+            </LinearLayout>
 
             <LinearLayout
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/edit_qty_each"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_white"
+                    android:ems="10"
+                    android:hint="@string/qty_specific"
+                    android:inputType="numberDecimal"
+                    android:padding="8dp" />
+
+                <EditText
+                    android:id="@+id/edit_days"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_white"
+                    android:ems="10"
+                    android:hint="@string/each_days"
+                    android:inputType="number"
+                    android:padding="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="8dp"
@@ -121,20 +192,20 @@
                     android:id="@+id/btn_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_background_white"
                     android:text="@string/canel"
-                    android:layout_marginRight="4dp"
                     android:textColor="@color/colorPrimary" />
 
                 <Button
                     android:id="@+id/btn_save"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_background"
                     android:text="@string/save"
-                    android:layout_marginLeft="4dp"
                     android:textColor="@color/colorWhite" />
             </LinearLayout>
 

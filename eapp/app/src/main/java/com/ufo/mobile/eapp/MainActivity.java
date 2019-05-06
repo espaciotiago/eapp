@@ -21,6 +21,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.ufo.mobile.eapp.Adapters.ItemAdapter;
@@ -36,7 +38,8 @@ import ModelManager.Item;
 public class MainActivity extends AppCompatActivity {
     private final static int CAMERA = 0;
     private final static int GALLERY = 1;
-    public final static int RESULT_LOAD_IMG = 2;
+    public final static int RESULT_LOAD_IMG_ITEM = 2;
+    public final static int RESULT_LOAD_IMG_USER = 3;
 
     //Logic items
     private DaoSession daoSession;
@@ -114,12 +117,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
+            case R.id.configuration:
+                Intent intentConfig = new Intent(MainActivity.this,ConfigurationActivity.class);
+                startActivity(intentConfig);
+                return true;
             case R.id.list_orders:
                 Intent intent = new Intent(MainActivity.this,OrdersActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.add_item:
-                createItemDialog = new CreateItemDialog(MainActivity.this, new CreateItemCallback() {
+                createItemDialog = new CreateItemDialog(MainActivity.this,new CreateItemCallback() {
                     @Override
                     public void createItemCallback(Item item) {
                         daoSession.getItemDao().insert(item);
@@ -131,8 +138,15 @@ public class MainActivity extends AppCompatActivity {
                         setRecyclerItems(items);
                     }
                 });
+                createItemDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                createItemDialog.setContentView(R.layout.dialog_create_item);
                 createItemDialog.setCanceledOnTouchOutside(false);
+                createItemDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
                 createItemDialog.show();
+                return true;
+            case R.id.charts:
+                Intent intentToCharts = new Intent(MainActivity.this,ChartsActivity.class);
+                startActivity(intentToCharts);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -177,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Activity.RESULT_OK)
             switch (requestCode){
-                case RESULT_LOAD_IMG:
+                case RESULT_LOAD_IMG_ITEM:
                     Uri selectedImage = data.getData();
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);

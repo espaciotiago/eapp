@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,12 +29,12 @@ public class CreateItemDialog extends Dialog {
     private CreateItemCallback callback;
     private Context mContext;
 
-    private EditText editReference,editName,editDescription,editStock,editQty;
+    private EditText editReference,editName,editDescription,editStock,editQty,editQtyEach,editDays;
     private ImageView imgPhoto;
     private Button btnCancel,btnSave;
     private ImageButton btnPhoto;
 
-    public CreateItemDialog(@NonNull Context context, final CreateItemCallback callback) {
+    public CreateItemDialog(@NonNull Context context,final CreateItemCallback callback) {
         super(context);
         this.callback = callback;
         mContext = context;
@@ -42,14 +43,14 @@ public class CreateItemDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_create_item);
 
         editReference = (EditText) findViewById(R.id.edit_reference);
         editName = (EditText) findViewById(R.id.edit_name);
         editDescription = (EditText) findViewById(R.id.edit_name);
         editStock = (EditText) findViewById(R.id.edit_stock);
         editQty = (EditText) findViewById(R.id.edit_qty);
+        editQtyEach = (EditText) findViewById(R.id.edit_qty);
+        editDays = (EditText) findViewById(R.id.edit_qty);
         imgPhoto = (ImageView) findViewById(R.id.img_photo);
         btnCancel = (Button) findViewById(R.id.btn_cancel);
         btnSave = (Button) findViewById(R.id.btn_save);
@@ -74,7 +75,7 @@ public class CreateItemDialog extends Dialog {
                 //Get the gallery
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
-                ((Activity) mContext).startActivityForResult(photoPickerIntent, MainActivity.RESULT_LOAD_IMG);
+                ((Activity) mContext).startActivityForResult(photoPickerIntent, MainActivity.RESULT_LOAD_IMG_ITEM);
             }
         });
     }
@@ -88,6 +89,8 @@ public class CreateItemDialog extends Dialog {
         String description = editDescription.getText().toString();
         String stockStr = editStock.getText().toString();
         String qtyStr = editQty.getText().toString();
+        String qtyEachStr = editQtyEach.getText().toString();
+        String daysStr = editDays.getText().toString();
         String imagePath = "";
         if(selectedImage != null){
             imagePath = Constants.saveImageOnStorage(mContext,selectedImage);
@@ -95,10 +98,13 @@ public class CreateItemDialog extends Dialog {
 
         if(!name.isEmpty() && !description.isEmpty() &&
            !stockStr.isEmpty() && !qtyStr.isEmpty() &&
+           !qtyEachStr.isEmpty() && !daysStr.isEmpty() &&
            !imagePath.isEmpty()){
             try{
                 double stock = Double.parseDouble(stockStr);
                 double qty = Double.parseDouble(qtyStr);
+                double qtyEach = Double.parseDouble(qtyEachStr);
+                int days = Integer.parseInt(daysStr);
 
                 Item itemToCreate = new Item();
                 itemToCreate.setReference(reference);
@@ -108,6 +114,8 @@ public class CreateItemDialog extends Dialog {
                 itemToCreate.setQtyDefault(qty);
                 itemToCreate.setImagePath(imagePath);
                 itemToCreate.setCreationDate(new Date());
+                itemToCreate.setQtyInSpecificTime(qtyEach);
+                itemToCreate.setEachInDays(days);
 
                 callback.createItemCallback(itemToCreate);
 

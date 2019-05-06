@@ -43,8 +43,6 @@ public class CreateUserDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_create_user);
 
         editIdentification = (EditText) findViewById(R.id.edit_identification);
         editName = (EditText) findViewById(R.id.edit_name);
@@ -74,7 +72,7 @@ public class CreateUserDialog extends Dialog {
                 //Get the gallery
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
-                ((Activity) mContext).startActivityForResult(photoPickerIntent, MainActivity.RESULT_LOAD_IMG);
+                ((Activity) mContext).startActivityForResult(photoPickerIntent, MainActivity.RESULT_LOAD_IMG_USER);
             }
         });
     }

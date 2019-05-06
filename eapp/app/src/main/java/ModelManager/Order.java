@@ -34,23 +34,17 @@ public class Order {
     private String autorizationSignImage;
     @Property(nameInDb = "creationDate")
     private Date creationDate;
-    public Order(Long id, Long item, Long owner, int status, double qty,
-            String comments, String userSignImage, String autorizationSignImage) {
-        this.id = id;
-        this.item = item;
-        this.owner = owner;
-        this.status = status;
-        this.qty = qty;
-        this.comments = comments;
-        this.userSignImage = userSignImage;
-        this.autorizationSignImage = autorizationSignImage;
-    }
+    @Property(nameInDb = "estimatedDate")
+    private Date estimatedDate;
+    @Property(nameInDb = "deliveryDate")
+    private Date deliveryDate;
+    
     public Order() {
     }
-    @Generated(hash = 2060805732)
+    @Generated(hash = 1725978386)
     public Order(Long id, Long item, Long owner, int status, double qty,
             String comments, String userSignImage, String autorizationSignImage,
-            Date creationDate) {
+            Date creationDate, Date estimatedDate, Date deliveryDate) {
         this.id = id;
         this.item = item;
         this.owner = owner;
@@ -60,6 +54,8 @@ public class Order {
         this.userSignImage = userSignImage;
         this.autorizationSignImage = autorizationSignImage;
         this.creationDate = creationDate;
+        this.estimatedDate = estimatedDate;
+        this.deliveryDate = deliveryDate;
     }
     public Long getId() {
         return this.id;
@@ -114,5 +110,17 @@ public class Order {
     }
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+    public Date getEstimatedDate() {
+        return this.estimatedDate;
+    }
+    public void setEstimatedDate(Date estimatedDate) {
+        this.estimatedDate = estimatedDate;
+    }
+    public Date getDeliveryDate() {
+        return this.deliveryDate;
+    }
+    public void setDeliveryDate(Date deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 }

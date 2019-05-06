@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">eapp</string>
     <string name="login">Iniciar Sesion</string>
+    <string name="logout">Cerrar Sesion</string>
     <string name="signup_btn">Registrar</string>
     <string name="signup">Registrar un nuevo usuario</string>
     <string name="username">Nombre de usuario</string>
@@ -18,6 +19,8 @@
     <string name="list">Lista de ordenes</string>
     <string name="add_user">Agregar un usuario nuevo</string>
     <string name="add_item">Crear un nuevo item</string>
+    <string name="add_area">Crear una nueva area</string>
+    <string name="add_section">Crear una nueva sección</string>
     <string name="item_name">Nombre del item</string>
     <string name="item_reference">Referencia</string>
     <string name="description">Descipción</string>
@@ -40,4 +43,8 @@
     <string name="default_error">Lo sentimos, ha ocurrido un error, por favor contacte a soporte técnico</string>
     <string name="qty_error">Lo sentimos, la cantidad solicitada no puede ser mayor que la cantidad en inventario</string>
     <string name="charts">Indicadores</string>
+    <string name="configuration">Configuración</string>
+    <string name="qty_specific">Cantidad permitida en un periodo de tiempo</string>
+    <string name="each_days">Periodo de tiempo en días</string>
+    <string name="succesfully_created">Nuevo registro creado</string>
 </resources>

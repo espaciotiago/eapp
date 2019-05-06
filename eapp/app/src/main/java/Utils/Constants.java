@@ -17,7 +17,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
@@ -27,6 +29,10 @@ public class Constants {
     public static String DB_NAME = "eapp_dao.db";
     public static String DIR_PHOTOS = "photos";
     public static String IMAGE_EXTENSSION = ".png";
+
+    public static int DAYS_IN_YEAR = 365;
+    public static int DAYS_IN_MONTH = 30;
+    public static int DAYS_IN_WEEK = 7;
 
     public static void closeKeyboardOnTouch(int res, final Activity activity){
         activity.findViewById(res).setOnTouchListener(new View.OnTouchListener() {
@@ -109,5 +115,45 @@ public class Constants {
         }
 
         return dateStr;
+    }
+
+    /**
+     * Get the list of ids, from a string splited by ,
+     * @param ids
+     * @return
+     */
+    public static List<Long> getIdsSplitedIds(String ids){
+        List<Long> idsLong = new ArrayList<>();
+        String[] splited = ids.split(",");
+
+        try {
+            for (int i = 0; i < splited.length; i++) {
+                Long id = Long.parseLong(splited[i]);
+                idsLong.add(id);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return idsLong;
+    }
+
+    /**
+     * Append an id to a string
+     * @param toAppend
+     * @param newId
+     * @return
+     */
+    public static String appendIdToString(String toAppend, Long newId){
+
+        String appended;
+
+        if(toAppend.equals("")){
+            appended = newId.toString();
+        }else{
+            appended = toAppend + "," + newId;
+        }
+
+        return appended;
     }
 }

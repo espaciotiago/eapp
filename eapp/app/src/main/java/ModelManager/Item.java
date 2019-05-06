@@ -23,23 +23,23 @@ public class Item {
     private double stock;
     @Property(nameInDb = "qtyDefault")
     private double qtyDefault;
+    @Property(nameInDb = "qtyInSpecificTime")
+    private double qtyInSpecificTime;
+    @Property(nameInDb = "eachInDays")
+    private int eachInDays;
     @Property(nameInDb = "creationDate")
     private Date creationDate;
-    public Item(Long id, String reference, String name, String description,
-            String imagePath, double stock, double qtyDefault) {
-        this.id = id;
-        this.reference = reference;
-        this.name = name;
-        this.description = description;
-        this.imagePath = imagePath;
-        this.stock = stock;
-        this.qtyDefault = qtyDefault;
-    }
+    @Property(nameInDb = "nextAvailable")
+    private Date nextAvailable;
+
     public Item() {
     }
-    @Generated(hash = 494781841)
+
+    @Generated(hash = 1702155668)
     public Item(Long id, String reference, String name, String description,
-            String imagePath, double stock, double qtyDefault, Date creationDate) {
+            String imagePath, double stock, double qtyDefault,
+            double qtyInSpecificTime, int eachInDays, Date creationDate,
+            Date nextAvailable) {
         this.id = id;
         this.reference = reference;
         this.name = name;
@@ -47,8 +47,12 @@ public class Item {
         this.imagePath = imagePath;
         this.stock = stock;
         this.qtyDefault = qtyDefault;
+        this.qtyInSpecificTime = qtyInSpecificTime;
+        this.eachInDays = eachInDays;
         this.creationDate = creationDate;
+        this.nextAvailable = nextAvailable;
     }
+
     public Long getId() {
         return this.id;
     }
@@ -96,5 +100,23 @@ public class Item {
     }
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+    public double getQtyInSpecificTime() {
+        return this.qtyInSpecificTime;
+    }
+    public void setQtyInSpecificTime(double qtyInSpecificTime) {
+        this.qtyInSpecificTime = qtyInSpecificTime;
+    }
+    public int getEachInDays() {
+        return this.eachInDays;
+    }
+    public void setEachInDays(int eachInDays) {
+        this.eachInDays = eachInDays;
+    }
+    public Date getNextAvailable() {
+        return this.nextAvailable;
+    }
+    public void setNextAvailable(Date nextAvailable) {
+        this.nextAvailable = nextAvailable;
     }
 }

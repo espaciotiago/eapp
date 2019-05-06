@@ -1,6 +1,8 @@
 package com.ufo.mobile.eapp.Dialogs;
 
+import ModelManager.Area;
 import ModelManager.Item;
+import ModelManager.Section;
 
 //--------------------------------------------------------------------------------------------------
 //Interface to communicate with the main activity

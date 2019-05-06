@@ -61,8 +61,12 @@
             android:name=".OrdersActivity"
             android:label="@string/list"
             android:screenOrientation="landscape" />
-        <activity android:name=".ChartsActivity"
+        <activity
+            android:name=".ChartsActivity"
             android:label="@string/charts"
+            android:screenOrientation="landscape" />
+        <activity android:name=".ConfigurationActivity"
+            android:label="@string/configuration"
             android:screenOrientation="landscape"></activity>
     </application>
 
