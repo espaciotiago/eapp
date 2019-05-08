@@ -31,6 +31,8 @@ public class User {
     private String area;
     @Property(nameInDb = "section")
     private String section;
+    @Property(nameInDb = "sectionIs")
+    private Long sectionId;
     @Property(nameInDb = "image")
     private String image;
     @Property(nameInDb = "creationDate")
@@ -49,10 +51,10 @@ public class User {
     }
     public User() {
     }
-    @Generated(hash = 1663792366)
+    @Generated(hash = 188522080)
     public User(Long id, String username, String password, String identification,
             String name, int type, Long areaId, String area, String section,
-            String image, Date creationDate) {
+            Long sectionId, String image, Date creationDate) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -62,6 +64,7 @@ public class User {
         this.areaId = areaId;
         this.area = area;
         this.section = section;
+        this.sectionId = sectionId;
         this.image = image;
         this.creationDate = creationDate;
     }
@@ -101,6 +104,12 @@ public class User {
     public void setType(int type) {
         this.type = type;
     }
+    public Long getAreaId() {
+        return this.areaId;
+    }
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
+    }
     public String getArea() {
         return this.area;
     }
@@ -112,6 +121,12 @@ public class User {
     }
     public void setSection(String section) {
         this.section = section;
+    }
+    public Long getSectionId() {
+        return this.sectionId;
+    }
+    public void setSectionId(Long sectionId) {
+        this.sectionId = sectionId;
     }
     public String getImage() {
         return this.image;
@@ -125,10 +140,5 @@ public class User {
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
-    public Long getAreaId() {
-        return this.areaId;
-    }
-    public void setAreaId(Long areaId) {
-        this.areaId = areaId;
-    }
+    
 }

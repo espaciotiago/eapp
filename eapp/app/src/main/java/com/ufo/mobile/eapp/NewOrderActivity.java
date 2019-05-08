@@ -85,20 +85,20 @@ public class NewOrderActivity extends AppCompatActivity {
         users = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Type.eq(User.REGULAR_USER)).list();
 
         //UI Elements
-        editQty = (EditText) findViewById(R.id.edit_qty);
-        editComments = (EditText) findViewById(R.id.edit_comments);
-        editSearchUser = (EditText) findViewById(R.id.edit_search);
-        viewOwner = (View) findViewById(R.id.owner_view);
-        txtOwnerName = (TextView) findViewById(R.id.txt_owner_name);
-        imgOwner = (CircleImageView) findViewById(R.id.img_owner);
-        imgItem = (ImageView) findViewById(R.id.img_item);
-        txtItemName = (TextView) findViewById(R.id.txt_item_name);
-        txtItemReference = (TextView) findViewById(R.id.txt_item_ref);
-        txtItemStock = (TextView) findViewById(R.id.txt_item_stock);
-        txtAddNewUser = (TextView) findViewById(R.id.txt_add_new_user);
-        btnNewOrder = (Button) findViewById(R.id.btn_new_order);
+        editQty = findViewById(R.id.edit_qty);
+        editComments = findViewById(R.id.edit_comments);
+        editSearchUser = findViewById(R.id.edit_search);
+        viewOwner = findViewById(R.id.owner_view);
+        txtOwnerName = findViewById(R.id.txt_owner_name);
+        imgOwner = findViewById(R.id.img_owner);
+        imgItem = findViewById(R.id.img_item);
+        txtItemName = findViewById(R.id.txt_item_name);
+        txtItemReference = findViewById(R.id.txt_item_ref);
+        txtItemStock = findViewById(R.id.txt_item_stock);
+        txtAddNewUser = findViewById(R.id.txt_add_new_user);
+        btnNewOrder = findViewById(R.id.btn_new_order);
         layoutManager = new LinearLayoutManager(this);
-        recyclerUsers = (RecyclerView) findViewById(R.id.recycler_users);
+        recyclerUsers = findViewById(R.id.recycler_users);
         recyclerUsers.setLayoutManager(layoutManager);
 
         //Set UI
@@ -109,7 +109,7 @@ public class NewOrderActivity extends AppCompatActivity {
         txtAddNewUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createUserDialog = new CreateUserDialog(NewOrderActivity.this, new CreateUserCallback() {
+                createUserDialog = new CreateUserDialog(getApplication(),NewOrderActivity.this, new CreateUserCallback() {
                     @Override
                     public void createUserCallback(User user) {
                         daoSession.getUserDao().insert(user);
@@ -170,12 +170,16 @@ public class NewOrderActivity extends AppCompatActivity {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                         createUserDialog.setImageBitmap(bitmap);
                     } catch (IOException e) {
-                        Log.e("TAG", "Some exception " + e);
+                        e.printStackTrace();
                     }
                     break;
             }
     }
 
+    /**
+     * --------------------------------------------------------------------
+     * @param users
+     */
     private void setRecycler(List<User> users){
         //Set adapter
         userAdapter = new UserAdapter(users, new UserSelectedCallback() {
@@ -188,6 +192,10 @@ public class NewOrderActivity extends AppCompatActivity {
         recyclerUsers.setAdapter(userAdapter);
     }
 
+    /**
+     * --------------------------------------------------------------------
+     * @param item
+     */
     private void setItemPreview(Item item){
         if(item != null) {
             txtItemName.setText(item.getName());
@@ -199,6 +207,10 @@ public class NewOrderActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * --------------------------------------------------------------------
+     * @param user
+     */
     private void setOwnerPreview(User user){
         if(user != null) {
             txtOwnerName.setText(user.getName());
@@ -208,6 +220,11 @@ public class NewOrderActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * --------------------------------------------------------------------
+     * @param search
+     * @return
+     */
     private List<User> searchUsers(String search){
         ArrayList<User> usersList = new ArrayList<>();
 
@@ -221,6 +238,9 @@ public class NewOrderActivity extends AppCompatActivity {
         return usersList;
     }
 
+    /**
+     * --------------------------------------------------------------------
+     */
     private void createOrder(){
         String qtyStr = editQty.getText().toString();
         String comments = editComments.getText().toString();
@@ -237,6 +257,9 @@ public class NewOrderActivity extends AppCompatActivity {
                     orderToCreate.setStatus(Order.CREATED);
                     Long orderId = daoSession.getOrderDao().insert(orderToCreate);
 
+                    //TODO Calcular si hay disponibilidad de cantidad cada x días
+                    //TODO Si llega a 0, quiere decir que ya no deberia haber disponibilidad
+                    //TODO Calcular la próxima fecha de disponibilidad
                     Intent intent = new Intent(this, OrderDetailActivity.class);
                     intent.putExtra("orderId", orderId);
                     intent.putExtra("isNew", true);

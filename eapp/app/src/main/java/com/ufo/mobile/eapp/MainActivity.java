@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         daoSession = ((DaoApp)getApplication()).getDaoSession();
         items = daoSession.getItemDao().loadAll();
 
+        //TODO Calcular fechas de disponibilidad, actualizar las que ya se cumplieron
+
         //UI Elements
         //searchView = (MaterialSearchView) findViewById(R.id.search_view);
         txtError = (TextView) findViewById(R.id.txt_error);

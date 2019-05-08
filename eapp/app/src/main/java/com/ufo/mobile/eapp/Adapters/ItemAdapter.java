@@ -58,6 +58,8 @@ public class ItemAdapter extends
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO: Validar si hay disponibilidad de cantidad cada x días
+                //TODO: si no verificar la próxima fecha en la que va a estar disponible
                 Intent intent = new Intent(itemViewHolder.mContext,NewOrderActivity.class);
                 intent.putExtra("itemId",item.getId());
                 itemViewHolder.mContext.startActivity(intent);

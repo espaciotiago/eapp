@@ -1,8 +1,10 @@
 package com.ufo.mobile.eapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -21,36 +23,36 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ModelManager.Area;
+
 public class ChartsActivity extends AppCompatActivity {
 
-    private BarChart chartItems;
-    private LineChart lineItems;
     private PieChart pieItems;
-    private TextView txtLine,txtBars,txtPie;
-    private View viewLine,viewBars,viewPie;
+    private TextView txtArea,txtQty;
+    private Button btnDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_charts);
+
         //Set back button on action bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        chartItems = (BarChart) findViewById(R.id.barchart_items);
-        lineItems = (LineChart) findViewById(R.id.linechart_items);
-        pieItems = (PieChart) findViewById(R.id.piechart_items);
-        txtLine = (TextView) findViewById(R.id.txt_line);
-        txtBars = (TextView) findViewById(R.id.txt_bars);
-        txtPie = (TextView) findViewById(R.id.txt_pie);
-        viewLine = (View) findViewById(R.id.view_line);
-        viewBars = (View) findViewById(R.id.view_bars);
-        viewPie = (View) findViewById(R.id.view_pie);
+        pieItems = findViewById(R.id.piechart_items);
+        txtArea = findViewById(R.id.txt_area_selected);
+        txtQty = findViewById(R.id.txt_area_request);
+        btnDetails = findViewById(R.id.btn_details);
 
+        /*
         ArrayList entries = new ArrayList<BarEntry>();
         ArrayList labels = new ArrayList<String>();
         for (int i = 0; i < 24;i++){
@@ -61,36 +63,40 @@ public class ChartsActivity extends AppCompatActivity {
             labels.add("Area "+ i);
         }
         setBarChart(entries,labels);
+        */
 
-        ArrayList entriesLine = new ArrayList<Entry>();
-        ArrayList labelsLine = new ArrayList<String>();
-        for (int i = 0; i < 24;i++){
-            int range = (10 - 1) + 1;
-            int qty = (int)(Math.random() * range) + 1;
-            Entry entry = new Entry(i,qty,"Area "+ i);
-            entriesLine.add(entry);
-            labelsLine.add("Area "+ i);
-        }
-        setLineChart(entriesLine);
-
-        int[] colors = new int[]{
-                R.color.colorYellow,
-                R.color.colorGreen,
-                R.color.colorPrimary,
-                R.color.colorRed,
-        };
         ArrayList entriesPie = new ArrayList<PieEntry>();
         ArrayList labelsPie = new ArrayList<String>();
-        for (int i = 0; i < 4;i++){
+        for (int i = 0; i < 10;i++){
             int range = (10 - 1) + 1;
             int qty = (int)(Math.random() * range) + 1;
             PieEntry entry = new PieEntry(qty,"Area "+ i);
             entriesPie.add(entry);
             labelsPie.add("Area "+ i);
         }
-        setPieChartData(entriesPie,colors);
+        setPieChartData(entriesPie);
+        setUpSelectedAreaView((PieEntry) entriesPie.get(0));
 
-        setupActionTabs();
+        //Actions
+        pieItems.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                //TODO Obtener el area seleccionada
+                setUpSelectedAreaView((PieEntry) e);
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
+        btnDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goToDetails = new Intent(ChartsActivity.this,DetailsChartActivity.class);
+                startActivity(goToDetails);
+            }
+        });
     }
 
     @Override
@@ -99,64 +105,18 @@ public class ChartsActivity extends AppCompatActivity {
         return true;
     }
 
-    private void setupActionTabs(){
-        txtLine.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                lineItems.setVisibility(View.VISIBLE);
-                chartItems.setVisibility(View.GONE);
-                pieItems.setVisibility(View.GONE);
-
-                txtLine.setTextColor(getResources().getColor(R.color.colorPrimary));
-                txtBars.setTextColor(getResources().getColor(R.color.colorAccentDark));
-                txtPie.setTextColor(getResources().getColor(R.color.colorAccentDark));
-
-                viewLine.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                viewBars.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                viewPie.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-            }
-        });
-
-        txtBars.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                lineItems.setVisibility(View.GONE);
-                chartItems.setVisibility(View.VISIBLE);
-                pieItems.setVisibility(View.GONE);
-
-                txtLine.setTextColor(getResources().getColor(R.color.colorAccentDark));
-                txtBars.setTextColor(getResources().getColor(R.color.colorPrimary));
-                txtPie.setTextColor(getResources().getColor(R.color.colorAccentDark));
-
-                viewLine.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                viewBars.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                viewPie.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-            }
-        });
-
-        txtPie.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                lineItems.setVisibility(View.GONE);
-                chartItems.setVisibility(View.GONE);
-                pieItems.setVisibility(View.VISIBLE);
-
-                txtLine.setTextColor(getResources().getColor(R.color.colorAccentDark));
-                txtBars.setTextColor(getResources().getColor(R.color.colorAccentDark));
-                txtPie.setTextColor(getResources().getColor(R.color.colorPrimary));
-
-                viewLine.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                viewBars.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                viewPie.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            }
-        });
-
+    /**
+     *
+     * @param e
+     */
+    private void setUpSelectedAreaView(PieEntry e){
+        txtArea.setText(e.getLabel());
+        txtQty.setText(e.getValue()+"");
     }
 
     /**
      * Set the charts of a week
      * @param entries
-     */
     private void setBarChart(List<BarEntry> entries, List<String> labels){
         BarDataSet dataSet = new BarDataSet(entries, "Ordenes por area");
         dataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -173,11 +133,11 @@ public class ChartsActivity extends AppCompatActivity {
         chartItems.setData(data);
         chartItems.invalidate();
     }
+     */
 
     /**
      * Set the charts of a week
      * @param entries
-     */
     private void setLineChart(List<Entry> entries){
         LineDataSet dataSet = new LineDataSet(entries, "Pedidos por area");
         dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
@@ -199,14 +159,15 @@ public class ChartsActivity extends AppCompatActivity {
         lineItems.setData(lineData);
         lineItems.invalidate();
     }
+     */
 
     /**
      * Set the data for the day pie chart
      * @param entries
      */
-    private void setPieChartData(List<PieEntry> entries,int[] colors){
+    private void setPieChartData(List<PieEntry> entries){
         PieDataSet pieDataSet = new PieDataSet(entries,"");
-        pieDataSet.setColors(colors,this);
+        pieDataSet.setColors(ColorTemplate.LIBERTY_COLORS);
         PieData pieData = new PieData(pieDataSet);
         Description description = new Description();
         description.setText("");

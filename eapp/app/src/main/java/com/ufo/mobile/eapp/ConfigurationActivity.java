@@ -95,6 +95,7 @@ public class ConfigurationActivity extends AppCompatActivity {
                         }else{
                             section.setAreas(Constants.appendIdToString(section.getAreas(),idArea));
                         }
+                        daoSession.getSectionDao().update(section);
 
                         if(createAreaDialog != null && createAreaDialog.isShowing()){
                             createAreaDialog.dismiss();
@@ -111,7 +112,7 @@ public class ConfigurationActivity extends AppCompatActivity {
         viewAddUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createUserDialog = new CreateUserDialog(ConfigurationActivity.this, new CreateUserCallback() {
+                createUserDialog = new CreateUserDialog(getApplication(),ConfigurationActivity.this, new CreateUserCallback() {
                     @Override
                     public void createUserCallback(User user) {
                         daoSession.getUserDao().insert(user);

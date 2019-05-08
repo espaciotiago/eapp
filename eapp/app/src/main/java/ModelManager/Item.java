@@ -31,15 +31,18 @@ public class Item {
     private Date creationDate;
     @Property(nameInDb = "nextAvailable")
     private Date nextAvailable;
+    @Property(nameInDb = "isAvailable")
+    private boolean isAvailable;
 
     public Item() {
+        this.isAvailable = true;
     }
 
-    @Generated(hash = 1702155668)
+    @Generated(hash = 179704164)
     public Item(Long id, String reference, String name, String description,
             String imagePath, double stock, double qtyDefault,
             double qtyInSpecificTime, int eachInDays, Date creationDate,
-            Date nextAvailable) {
+            Date nextAvailable, boolean isAvailable) {
         this.id = id;
         this.reference = reference;
         this.name = name;
@@ -51,6 +54,7 @@ public class Item {
         this.eachInDays = eachInDays;
         this.creationDate = creationDate;
         this.nextAvailable = nextAvailable;
+        this.isAvailable = isAvailable;
     }
 
     public Long getId() {
@@ -118,5 +122,13 @@ public class Item {
     }
     public void setNextAvailable(Date nextAvailable) {
         this.nextAvailable = nextAvailable;
+    }
+
+    public boolean getIsAvailable() {
+        return this.isAvailable;
+    }
+
+    public void setIsAvailable(boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 }
