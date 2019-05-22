@@ -49,8 +49,8 @@ public class CreateItemDialog extends Dialog {
         editDescription = (EditText) findViewById(R.id.edit_name);
         editStock = (EditText) findViewById(R.id.edit_stock);
         editQty = (EditText) findViewById(R.id.edit_qty);
-        editQtyEach = (EditText) findViewById(R.id.edit_qty);
-        editDays = (EditText) findViewById(R.id.edit_qty);
+        editQtyEach = (EditText) findViewById(R.id.edit_qty_each);
+        editDays = (EditText) findViewById(R.id.edit_days);
         imgPhoto = (ImageView) findViewById(R.id.img_photo);
         btnCancel = (Button) findViewById(R.id.btn_cancel);
         btnSave = (Button) findViewById(R.id.btn_save);

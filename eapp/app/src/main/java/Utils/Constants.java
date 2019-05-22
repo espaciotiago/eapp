@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -115,6 +116,19 @@ public class Constants {
         }
 
         return dateStr;
+    }
+
+    /**
+     * Adds days to a given date
+     * @param dateToAdd
+     * @param numberOfDays
+     * @return
+     */
+    public static Date calculateDatePlusDays(Date dateToAdd, int numberOfDays){
+        Calendar c = Calendar.getInstance();
+        c.setTime(dateToAdd);
+        c.add(Calendar.DATE, numberOfDays);
+        return c.getTime();
     }
 
     /**

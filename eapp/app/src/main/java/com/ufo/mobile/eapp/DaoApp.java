@@ -2,6 +2,8 @@ package com.ufo.mobile.eapp;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import org.greenrobot.greendao.database.Database;
 
 import ModelManager.DaoMaster;
@@ -16,6 +18,7 @@ public class DaoApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
         // regular SQLite database
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, Constants.DB_NAME);

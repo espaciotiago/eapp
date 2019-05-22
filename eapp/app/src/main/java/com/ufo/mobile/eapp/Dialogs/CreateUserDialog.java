@@ -193,10 +193,14 @@ public class CreateUserDialog extends Dialog {
         list.add(mContext.getResources().getString(R.string.area));
 
         if(section != null){
-            List<Long> areasIds = Constants.getIdsSplitedIds(section.getAreas());
-            areas = getAreasFromList(areasIds);
-            for (int i = 0; i < areas.size(); i++){
-                list.add(areas.get(i).getName());
+            if(section.getAreas() != null){
+                List<Long> areasIds = Constants.getIdsSplitedIds(section.getAreas());
+                areas = getAreasFromList(areasIds);
+                for (int i = 0; i < areas.size(); i++){
+                    list.add(areas.get(i).getName());
+                }
+            }else{
+                Toast.makeText(getContext(),getContext().getResources().getString(R.string.section_no_areas),Toast.LENGTH_LONG).show();
             }
         }
 

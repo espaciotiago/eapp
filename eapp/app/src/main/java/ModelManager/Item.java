@@ -1,5 +1,11 @@
 package ModelManager;
 
+import android.app.Application;
+import android.content.Context;
+import android.os.AsyncTask;
+
+import com.ufo.mobile.eapp.DaoApp;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;

@@ -44,6 +44,8 @@
     <string name="qty_error">Lo sentimos, la cantidad solicitada no puede ser mayor que la cantidad en inventario</string>
     <string name="charts">Indicadores</string>
     <string name="total">Total:</string>
+    <string name="total_orders">Total de pedidos:</string>
+    <string name="section_no_areas">La sección seleccionada no cuenta con areas asociadas</string>
     <string name="details">Ver detalles</string>
     <string name="details_label">Detalles</string>
     <string name="configuration">Configuración</string>

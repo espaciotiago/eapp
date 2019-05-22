@@ -28,12 +28,14 @@ import com.ufo.mobile.eapp.Dialogs.CreateUserDialog;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ModelManager.DaoSession;
 import ModelManager.Item;
 import ModelManager.ItemDao;
 import ModelManager.Order;
+import ModelManager.OrderDao;
 import ModelManager.User;
 import ModelManager.UserDao;
 import Utils.Constants;
@@ -249,21 +251,58 @@ public class NewOrderActivity extends AppCompatActivity {
             try{
                 double qty = Double.parseDouble(qtyStr);
                 if(qty <= item.getStock()) {
+                    boolean continueToCreate = true;
+
                     Order orderToCreate = new Order();
                     orderToCreate.setOwner(owner.getId());
                     orderToCreate.setItem(item.getId());
                     orderToCreate.setQty(qty);
                     orderToCreate.setComments(comments);
                     orderToCreate.setStatus(Order.CREATED);
-                    Long orderId = daoSession.getOrderDao().insert(orderToCreate);
 
                     //TODO Calcular si hay disponibilidad de cantidad cada x días
                     //TODO Si llega a 0, quiere decir que ya no deberia haber disponibilidad
-                    //TODO Calcular la próxima fecha de disponibilidad
-                    Intent intent = new Intent(this, OrderDetailActivity.class);
-                    intent.putExtra("orderId", orderId);
-                    intent.putExtra("isNew", true);
-                    startActivity(intent);
+                    if(item.getNextAvailable()!=null){
+                        if(item.getNextAvailable().compareTo(new Date()) == 1){
+                            continueToCreate = false;
+                            Toast.makeText(this,"No disponible hasta: " + Constants.formatDate(item.getNextAvailable()),Toast.LENGTH_LONG).show();
+                        }else{
+                            double ordersUntilNow = calculateOrdersOfItem(item.getId(),item.getNextAvailable());
+                            double requested = ordersUntilNow + qty;
+                            if(requested <= item.getQtyInSpecificTime()) {
+                                if((item.getQtyInSpecificTime() - requested) == 0) {
+                                    item.setNextAvailable(Constants.calculateDatePlusDays(item.getNextAvailable(), item.getEachInDays()));
+                                }
+                            }else{
+                                continueToCreate = false;
+                                Toast.makeText(this,
+                                        "La cantidad solicitada sobrepasa la cantidad permitida hasta: " + Constants.formatDate(item.getNextAvailable()),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }else{
+                        double ordersUntilNow = calculateOrdersOfItem(item.getId(),item.getNextAvailable());
+                        double requested = ordersUntilNow + qty;
+                        if(requested <= item.getQtyInSpecificTime()) {
+                            // Is the first time that a item is requested and get the qty permited
+                            if((item.getQtyInSpecificTime() - requested) == 0) {
+                                item.setNextAvailable(Constants.calculateDatePlusDays(new Date(), item.getEachInDays()));
+                            }
+                        }else{
+                            continueToCreate = false;
+                            Toast.makeText(this,
+                                    "La cantidad solicitada sobrepasa la cantidad permitida",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    if(continueToCreate) {
+                        daoSession.getItemDao().update(item);
+                        Long orderId = daoSession.getOrderDao().insert(orderToCreate);
+                        Intent intent = new Intent(this, OrderDetailActivity.class);
+                        intent.putExtra("orderId", orderId);
+                        intent.putExtra("isNew", true);
+                        startActivity(intent);
+                    }
                 }else{
                     Toast.makeText(this,this.getResources().getString(R.string.qty_error),Toast.LENGTH_LONG).show();
                 }
@@ -276,4 +315,24 @@ public class NewOrderActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @param itemId
+     * @return
+     */
+    public double calculateOrdersOfItem(Long itemId, Date lastAvailable){
+        double ordersCount = 0;
+        List<Order> orders = daoSession.getOrderDao().queryBuilder().where(OrderDao.Properties.Item.eq(itemId)).list();
+        for(int i = 0; i < orders.size(); i++){
+            Order or = orders.get(i);
+            if(lastAvailable != null) {
+                if (or.getCreationDate().compareTo(lastAvailable) == 1) {
+                    ordersCount += or.getQty();
+                }
+            }else{
+                ordersCount += or.getQty();
+            }
+        }
+        return ordersCount;
+    }
 }

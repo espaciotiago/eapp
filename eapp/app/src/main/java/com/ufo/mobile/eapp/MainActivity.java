@@ -2,12 +2,14 @@ package com.ufo.mobile.eapp;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Application;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -131,13 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 createItemDialog = new CreateItemDialog(MainActivity.this,new CreateItemCallback() {
                     @Override
                     public void createItemCallback(Item item) {
-                        daoSession.getItemDao().insert(item);
-                        items = daoSession.getItemDao().loadAll();
-
-                        if(createItemDialog != null && createItemDialog.isShowing()){
-                            createItemDialog.dismiss();
-                        }
-                        setRecyclerItems(items);
+                        new CreateItemTask(MainActivity.this,daoSession);
                     }
                 });
                 createItemDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -239,6 +235,37 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 } else {
                     return;
+                }
+            }
+        }
+    }
+
+    //CreateItemTask -------------------------------------------------------------------------------
+    private class CreateItemTask extends AsyncTask<Item,Integer,Long> {
+
+        private DaoSession daoSession;
+        private Context context;
+
+        private CreateItemTask(Context context, DaoSession daoSession){
+            this.context = context;
+            this.daoSession = daoSession;
+        }
+
+        @Override
+        protected Long doInBackground(Item... items) {
+            return daoSession.getItemDao().insert(items[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Long itemId) {
+            super.onPostExecute(itemId);
+            if(itemId != null){
+
+                items = daoSession.getItemDao().loadAll();
+                setRecyclerItems(items);
+
+                if(createItemDialog != null && createItemDialog.isShowing()){
+                    createItemDialog.dismiss();
                 }
             }
         }

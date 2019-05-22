@@ -72,6 +72,10 @@
         <activity android:name=".DetailsChartActivity"
             android:label="@string/details_label"
             android:screenOrientation="landscape"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="8b4bf7de7437a175d1c890ac5275924439b9c900" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

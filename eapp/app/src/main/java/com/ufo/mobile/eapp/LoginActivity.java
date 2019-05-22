@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
@@ -34,6 +36,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // Logs  a user for crashlytics
+        logUser();
 
         //Close keyboard on touch screen
         Constants.closeKeyboardOnTouch(R.id.scroll,this);
@@ -107,4 +112,13 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this,getResources().getString(R.string.fill_the_fields),Toast.LENGTH_LONG).show();
         }
     }
+
+
+    private void logUser() {
+        // You can call any combination of these three methods
+        Crashlytics.setUserEmail("msantim@hotmail.com");
+        Crashlytics.setUserIdentifier("12345");
+        Crashlytics.setUserName("Tiago");
+    }
+
 }

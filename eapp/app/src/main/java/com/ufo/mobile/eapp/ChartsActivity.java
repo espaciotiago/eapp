@@ -1,11 +1,16 @@
 package com.ufo.mobile.eapp;
 
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -31,8 +36,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ModelManager.Area;
+import ModelManager.DaoSession;
+import ModelManager.Item;
+import ModelManager.ItemDao;
+import ModelManager.Order;
+import ModelManager.OrderDao;
+import ModelManager.Section;
+import ModelManager.User;
+import ModelManager.UserDao;
 
 public class ChartsActivity extends AppCompatActivity {
+
+    private DaoSession daoSession;
+    private ArrayList labelsPie = new ArrayList<String>();
+    private List<Area> areas = new ArrayList<Area>();
+    private Area selectedArea;
 
     private PieChart pieItems;
     private TextView txtArea,txtQty;
@@ -43,6 +61,8 @@ public class ChartsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_charts);
 
+        daoSession = ((DaoApp)getApplication()).getDaoSession();
+
         //Set back button on action bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -51,37 +71,14 @@ public class ChartsActivity extends AppCompatActivity {
         txtArea = findViewById(R.id.txt_area_selected);
         txtQty = findViewById(R.id.txt_area_request);
         btnDetails = findViewById(R.id.btn_details);
-
-        /*
-        ArrayList entries = new ArrayList<BarEntry>();
-        ArrayList labels = new ArrayList<String>();
-        for (int i = 0; i < 24;i++){
-            int range = (10 - 1) + 1;
-            int qty = (int)(Math.random() * range) + 1;
-            BarEntry entry = new BarEntry(i,qty,"Area "+ i);
-            entries.add(entry);
-            labels.add("Area "+ i);
-        }
-        setBarChart(entries,labels);
-        */
-
-        ArrayList entriesPie = new ArrayList<PieEntry>();
-        ArrayList labelsPie = new ArrayList<String>();
-        for (int i = 0; i < 10;i++){
-            int range = (10 - 1) + 1;
-            int qty = (int)(Math.random() * range) + 1;
-            PieEntry entry = new PieEntry(qty,"Area "+ i);
-            entriesPie.add(entry);
-            labelsPie.add("Area "+ i);
-        }
-        setPieChartData(entriesPie);
-        setUpSelectedAreaView((PieEntry) entriesPie.get(0));
+        new GetChartsInfo(this).execute(daoSession);
 
         //Actions
         pieItems.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
-                //TODO Obtener el area seleccionada
+                int selectedPosition = (int) h.getX();
+                selectedArea = areas.get(selectedPosition);
                 setUpSelectedAreaView((PieEntry) e);
             }
 
@@ -94,6 +91,7 @@ public class ChartsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent goToDetails = new Intent(ChartsActivity.this,DetailsChartActivity.class);
+                goToDetails.putExtra("areaId",selectedArea.getId());
                 startActivity(goToDetails);
             }
         });
@@ -115,53 +113,6 @@ public class ChartsActivity extends AppCompatActivity {
     }
 
     /**
-     * Set the charts of a week
-     * @param entries
-    private void setBarChart(List<BarEntry> entries, List<String> labels){
-        BarDataSet dataSet = new BarDataSet(entries, "Ordenes por area");
-        dataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
-        BarData data = new BarData(dataSet);
-        Description description = new Description();
-        description.setText("");
-        chartItems.getAxisLeft().setDrawGridLines(false);
-        chartItems.getXAxis().setDrawGridLines(false);
-        chartItems.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        chartItems.getAxisRight().setDrawGridLines(false);
-        chartItems.getAxisRight().setEnabled(false);
-        chartItems.setDescription(description);
-        chartItems.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
-        chartItems.setData(data);
-        chartItems.invalidate();
-    }
-     */
-
-    /**
-     * Set the charts of a week
-     * @param entries
-    private void setLineChart(List<Entry> entries){
-        LineDataSet dataSet = new LineDataSet(entries, "Pedidos por area");
-        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-        dataSet.setDrawFilled(true);
-        dataSet.setColor(getResources().getColor(R.color.colorPrimary));
-        dataSet.setFillColor(getResources().getColor(R.color.colorSoftGray));
-        dataSet.setValueTextColor(getResources().getColor(R.color.colorAccent));
-        LineData lineData = new LineData(dataSet);
-        Description description = new Description();
-        description.setText("");
-        //lineItems.getAxisLeft().setAxisMaxValue(new Float(5));
-        lineItems.getAxisLeft().setAxisMinValue(0);
-        lineItems.getAxisLeft().setDrawGridLines(false);
-        lineItems.getXAxis().setDrawGridLines(false);
-        lineItems.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        lineItems.getAxisRight().setDrawGridLines(false);
-        lineItems.getAxisRight().setEnabled(false);
-        lineItems.setDescription(description);
-        lineItems.setData(lineData);
-        lineItems.invalidate();
-    }
-     */
-
-    /**
      * Set the data for the day pie chart
      * @param entries
      */
@@ -181,6 +132,51 @@ public class ChartsActivity extends AppCompatActivity {
         pieItems.setCenterTextColor(getResources().getColor(R.color.colorAccentDark));
         pieItems.setData(pieData);
         pieItems.invalidate();
+    }
+
+    /** -------------------------------------------------------------------------------
+     *
+     */
+    private class GetChartsInfo extends AsyncTask<DaoSession,Integer,ArrayList<PieEntry>> {
+
+        private Context context;
+
+        private GetChartsInfo(Context context){
+            this.context = context;
+        }
+
+        @Override
+        protected ArrayList<PieEntry> doInBackground(DaoSession... session) {
+            DaoSession daoSession = session[0];
+            ArrayList entriesPie = new ArrayList<PieEntry>();
+            areas = session[0].getAreaDao().loadAll();
+            for(int i = 0; i < areas.size(); i++){
+                int areaCounter = 0;
+                Area area = areas.get(i);
+                List<User> owners = daoSession.getUserDao().queryBuilder()
+                        .where(UserDao.Properties.AreaId.eq(area.getId())).list();
+                for(int j= 0; j < owners.size();j++){
+                    User user = owners.get(j);
+                    Long orders = daoSession.getOrderDao().queryBuilder()
+                            .where(OrderDao.Properties.Owner.eq(user.getId())).count();
+                    areaCounter += orders;
+                }
+                PieEntry entry = new PieEntry(areaCounter,area.getName());
+                entriesPie.add(entry);
+                labelsPie.add(area.getName());
+            }
+
+            return entriesPie;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<PieEntry> list) {
+            super.onPostExecute(list);
+            setPieChartData(list);
+            if(list != null && list.size() > 0) {
+                setUpSelectedAreaView((PieEntry) list.get(0));
+            }
+        }
     }
 
 }
