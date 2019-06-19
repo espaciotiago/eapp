@@ -36,14 +36,19 @@ import java.util.List;
 
 import ModelManager.DaoSession;
 import ModelManager.Item;
+import Utils.Constants;
+import Utils.DummyDataManager;
 
 public class MainActivity extends AppCompatActivity {
     private final static int CAMERA = 0;
     private final static int GALLERY = 1;
     public final static int RESULT_LOAD_IMG_ITEM = 2;
+    public final static int RESULT_LOAD_IMG_ITEM_CAMARA = 4;
     public final static int RESULT_LOAD_IMG_USER = 3;
+    public final static int RESULT_LOAD_IMG_USER_CAMARA = 5;
 
     //Logic items
+    private DummyDataManager dummyDataManager;
     private DaoSession daoSession;
     private List<Item> items = new ArrayList<>();
     private int numberOfRows = 4;
@@ -59,10 +64,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Constants.setLayoutOrientation(this);
+        if(Constants.isPortrait(this)){
+            numberOfRows = 1;
+        }
 
         //Get the database session
         daoSession = ((DaoApp)getApplication()).getDaoSession();
         items = daoSession.getItemDao().loadAll();
+        dummyDataManager = new DummyDataManager(daoSession);
+
+        if(!dummyDataManager.verifyDataExistence()){
+            new InsertDummyData().execute(daoSession);
+        }
 
         //TODO Calcular fechas de disponibilidad, actualizar las que ya se cumplieron
 
@@ -133,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 createItemDialog = new CreateItemDialog(MainActivity.this,new CreateItemCallback() {
                     @Override
                     public void createItemCallback(Item item) {
-                        new CreateItemTask(MainActivity.this,daoSession);
+                        new CreateItemTask(MainActivity.this,daoSession).execute(item);
                     }
                 });
                 createItemDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -195,6 +209,14 @@ public class MainActivity extends AppCompatActivity {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                         createItemDialog.setImageBitmap(bitmap);
                     } catch (IOException e) {
+                        Log.e("TAG", "Some exception " + e);
+                    }
+                    break;
+                case RESULT_LOAD_IMG_ITEM_CAMARA:
+                    try {
+                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                        createItemDialog.setImageBitmap(bitmap);
+                    } catch (Exception e) {
                         Log.e("TAG", "Some exception " + e);
                     }
                     break;
@@ -268,6 +290,27 @@ public class MainActivity extends AppCompatActivity {
                     createItemDialog.dismiss();
                 }
             }
+        }
+    }
+
+    //Create Dummy data for test -------------------------------------------------------------------
+    public class InsertDummyData extends AsyncTask<DaoSession,Integer,List<Long>> {
+
+        private InsertDummyData(){}
+
+        @Override
+        protected List<Long> doInBackground(DaoSession... daoSessions) {
+            return dummyDataManager.fillDummyData();
+        }
+
+        @Override
+        protected void onPostExecute(List<Long> aLong) {
+            super.onPostExecute(aLong);
+            if(!aLong.isEmpty()){
+                items = daoSession.getItemDao().loadAll();
+                setRecyclerItems(items);
+            }
+
         }
     }
 }

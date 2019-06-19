@@ -9,6 +9,8 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".DaoApp"
         android:allowBackup="true"
@@ -17,6 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".UserSearchActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="landscape">
@@ -69,13 +72,14 @@
             android:name=".ConfigurationActivity"
             android:label="@string/configuration"
             android:screenOrientation="landscape" />
-        <activity android:name=".DetailsChartActivity"
+        <activity
+            android:name=".DetailsChartActivity"
             android:label="@string/details_label"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="8b4bf7de7437a175d1c890ac5275924439b9c900" />
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

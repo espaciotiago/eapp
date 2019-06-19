@@ -28,7 +28,7 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-
+        Constants.setLayoutOrientation(this);
         //Close keyboard on touch screen
         Constants.closeKeyboardOnTouch(R.id.scroll,this);
         //Get the database session

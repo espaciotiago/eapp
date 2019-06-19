@@ -3,6 +3,8 @@ package Utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -89,15 +91,49 @@ public class Constants {
         Bitmap image = null;
         if(path != null && !path.isEmpty()) {
             try {
+                if(path.contains("img")){
+                    Resources resources = context.getResources();
+                    int resourceId = resources.getIdentifier(path,"drawable",context.getPackageName());
+                    Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),resourceId);
+                    return bitmap;
+                }
                 ContextWrapper cw = new ContextWrapper(context);
                 File path1 = cw.getDir(DIR_PHOTOS, Context.MODE_PRIVATE);
                 File f = new File(path1, path);
-                image = BitmapFactory.decodeStream(new FileInputStream(f));
-            } catch (FileNotFoundException e) {
+                image = decodeFile(f);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return image;
+    }
+
+    /**
+     * Decodes image and scales it to reduce memory consumption
+     */
+    private static Bitmap decodeFile(File f) {
+        try {
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
+
+            // The new size we want to scale to
+            final int REQUIRED_SIZE= 150;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            // Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+        } catch (FileNotFoundException e) {}
+        return null;
     }
 
     /**
@@ -169,5 +205,23 @@ public class Constants {
         }
 
         return appended;
+    }
+
+    /**
+     * Puts the orientation on portrait if is phone or landscape if is tablet
+     * @param activity
+     */
+    public static void setLayoutOrientation(Activity activity){
+        if(activity.getResources().getBoolean(R.bool.portrait_only)){
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static boolean isPortrait(Activity activity){
+        return activity.getResources().getBoolean(R.bool.portrait_only);
     }
 }

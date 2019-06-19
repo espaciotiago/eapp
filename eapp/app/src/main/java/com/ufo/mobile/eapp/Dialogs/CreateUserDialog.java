@@ -1,9 +1,11 @@
 package com.ufo.mobile.eapp.Dialogs;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -90,10 +92,25 @@ public class CreateUserDialog extends Dialog {
         btnPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Get the gallery
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                ((Activity) mContext).startActivityForResult(photoPickerIntent, MainActivity.RESULT_LOAD_IMG_USER);
+                new AlertDialog.Builder(mContext)
+                        .setTitle(mContext.getResources().getString(R.string.add_image_title))
+                        .setMessage(mContext.getResources().getString(R.string.add_image_body))
+                        .setPositiveButton(R.string.gallery, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Get the gallery
+                                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                                photoPickerIntent.setType("image/*");
+                                ((Activity) mContext).startActivityForResult(photoPickerIntent, MainActivity.RESULT_LOAD_IMG_USER);
+                            }
+                        })
+                        .setNeutralButton(R.string.take_picture, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                                ((Activity) mContext).startActivityForResult(cameraIntent, MainActivity.RESULT_LOAD_IMG_USER_CAMARA);
+                            }
+                        })
+                        .setIcon(R.drawable.ic_add_a_photo)
+                        .show();
             }
         });
         spnSection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

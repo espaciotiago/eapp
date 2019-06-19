@@ -1,8 +1,12 @@
 package com.ufo.mobile.eapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -42,13 +46,19 @@ import Utils.Constants;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.ufo.mobile.eapp.MainActivity.RESULT_LOAD_IMG_USER;
+import static com.ufo.mobile.eapp.MainActivity.RESULT_LOAD_IMG_USER_CAMARA;
+import static com.ufo.mobile.eapp.OrderDetailActivity.REQUEST_SIGNATURE;
 
 public class NewOrderActivity extends AppCompatActivity {
+
+    public final static int USER_SELECTION = 0;
 
     private Item item;
     private User owner;
     private List<User> users = new ArrayList<>();
     private DaoSession daoSession;
+    private String signImagePath;
+    private Order orderToCreate = new Order();
 
     //UI Elements
     private RecyclerView recyclerUsers;
@@ -56,7 +66,8 @@ public class NewOrderActivity extends AppCompatActivity {
     private UserAdapter userAdapter;
     private EditText editQty, editComments, editSearchUser;
     private TextView txtAddNewUser;
-    private Button btnNewOrder;
+    private Button btnNewOrder,btnNewOrderGrand;
+    private View viewUsers;
     // Owner preview UI
     private View viewOwner;
     private CircleImageView imgOwner;
@@ -70,7 +81,7 @@ public class NewOrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_order);
-
+        Constants.setLayoutOrientation(this);
         //Set back button on action bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -91,6 +102,7 @@ public class NewOrderActivity extends AppCompatActivity {
         editComments = findViewById(R.id.edit_comments);
         editSearchUser = findViewById(R.id.edit_search);
         viewOwner = findViewById(R.id.owner_view);
+        viewUsers = findViewById(R.id.view_users);
         txtOwnerName = findViewById(R.id.txt_owner_name);
         imgOwner = findViewById(R.id.img_owner);
         imgItem = findViewById(R.id.img_item);
@@ -99,11 +111,15 @@ public class NewOrderActivity extends AppCompatActivity {
         txtItemStock = findViewById(R.id.txt_item_stock);
         txtAddNewUser = findViewById(R.id.txt_add_new_user);
         btnNewOrder = findViewById(R.id.btn_new_order);
+        btnNewOrderGrand = findViewById(R.id.btn_new_order_grand);
         layoutManager = new LinearLayoutManager(this);
         recyclerUsers = findViewById(R.id.recycler_users);
         recyclerUsers.setLayoutManager(layoutManager);
 
         //Set UI
+        if(Constants.isPortrait(this)){
+            configurePortraitMode();
+        }
         setRecycler(users);
         setItemPreview(item);
 
@@ -130,6 +146,12 @@ public class NewOrderActivity extends AppCompatActivity {
             }
         });
         btnNewOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createOrder();
+            }
+        });
+        btnNewOrderGrand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createOrder();
@@ -175,7 +197,50 @@ public class NewOrderActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     break;
+
+                case REQUEST_SIGNATURE:
+                    signImagePath = data.getStringExtra("signature");
+                    if(signImagePath != null && !signImagePath.isEmpty()) {
+                        orderToCreate.setAutorizationSignImage(signImagePath);
+                        Long orderId = daoSession.getOrderDao().insert(orderToCreate);
+                        Intent intent = new Intent(this, OrderDetailActivity.class);
+                        intent.putExtra("orderId", orderId);
+                        intent.putExtra("isNew", true);
+                        startActivity(intent);
+                    }
+                    break;
+                case RESULT_LOAD_IMG_USER_CAMARA:
+                    try {
+                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                        createUserDialog.setImageBitmap(bitmap);
+                    } catch (Exception e) {
+                        Log.e("RESULT_IMG_USER_CAMARA", e.getMessage());
+                    }
+                    break;
+                case  USER_SELECTION:
+                    Long userSelected = data.getLongExtra("user",-1);
+                    if(userSelected >= 0){
+                        owner = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Id.eq(userSelected)).unique();
+                        setOwnerPreview(owner);
+                    }
+                    break;
             }
+    }
+
+    /**
+     * --------------------------------------------------------------------
+     */
+    private void configurePortraitMode(){
+        viewUsers.setVisibility(View.GONE);
+        btnNewOrderGrand.setVisibility(View.VISIBLE);
+        viewOwner.setVisibility(View.VISIBLE);
+        viewOwner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(NewOrderActivity.this,UserSearchActivity.class);
+                startActivityForResult(intent, USER_SELECTION);
+            }
+        });
     }
 
     /**
@@ -216,7 +281,7 @@ public class NewOrderActivity extends AppCompatActivity {
     private void setOwnerPreview(User user){
         if(user != null) {
             txtOwnerName.setText(user.getName());
-            Bitmap bp = Constants.loadImageFromStorage(this,user.getImage());
+            Bitmap bp = Constants.loadImageFromStorage(this, user.getImage());
             imgOwner.setImageBitmap(bp);
             viewOwner.setVisibility(View.VISIBLE);
         }
@@ -253,7 +318,7 @@ public class NewOrderActivity extends AppCompatActivity {
                 if(qty <= item.getStock()) {
                     boolean continueToCreate = true;
 
-                    Order orderToCreate = new Order();
+                    orderToCreate = new Order();
                     orderToCreate.setOwner(owner.getId());
                     orderToCreate.setItem(item.getId());
                     orderToCreate.setQty(qty);
@@ -266,6 +331,7 @@ public class NewOrderActivity extends AppCompatActivity {
                         if(item.getNextAvailable().compareTo(new Date()) == 1){
                             continueToCreate = false;
                             Toast.makeText(this,"No disponible hasta: " + Constants.formatDate(item.getNextAvailable()),Toast.LENGTH_LONG).show();
+                            showAlertForRequestPermission();
                         }else{
                             double ordersUntilNow = calculateOrdersOfItem(item.getId(),item.getNextAvailable());
                             double requested = ordersUntilNow + qty;
@@ -278,6 +344,7 @@ public class NewOrderActivity extends AppCompatActivity {
                                 Toast.makeText(this,
                                         "La cantidad solicitada sobrepasa la cantidad permitida hasta: " + Constants.formatDate(item.getNextAvailable()),
                                         Toast.LENGTH_LONG).show();
+                                showAlertForRequestPermission();
                             }
                         }
                     }else{
@@ -293,6 +360,7 @@ public class NewOrderActivity extends AppCompatActivity {
                             Toast.makeText(this,
                                     "La cantidad solicitada sobrepasa la cantidad permitida",
                                     Toast.LENGTH_LONG).show();
+                            showAlertForRequestPermission();
                         }
                     }
                     if(continueToCreate) {
@@ -334,5 +402,22 @@ public class NewOrderActivity extends AppCompatActivity {
             }
         }
         return ordersCount;
+    }
+
+    /**
+     * Shows a dialog
+     */
+    private void showAlertForRequestPermission(){
+        new AlertDialog.Builder(this)
+                .setTitle("Se requieren permisos")
+                .setMessage("Para realizar esta operación, es necesaria la firma de un supervisor que la autorice." +
+                        " ¿Desea continuar a solicitar la firma?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Intent intent = new Intent(NewOrderActivity.this,SignatureActivity.class);
+                        startActivityForResult(intent, REQUEST_SIGNATURE);
+                    }})
+                .setNegativeButton(android.R.string.no, null).show();
     }
 }

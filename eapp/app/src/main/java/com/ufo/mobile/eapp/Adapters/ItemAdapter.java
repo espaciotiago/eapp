@@ -2,7 +2,9 @@ package com.ufo.mobile.eapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -50,10 +52,11 @@ public class ItemAdapter extends
         itemViewHolder.txtName.setText(item.getName());
         itemViewHolder.txtStock.setText(item.getStock()+"");
 
-        if(item.getImagePath() != null && !item.getImagePath().isEmpty()){
-            Bitmap imageOfItem = Constants.loadImageFromStorage(itemViewHolder.mContext,item.getImagePath());
+        if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
+            Bitmap imageOfItem = Constants.loadImageFromStorage(itemViewHolder.mContext, item.getImagePath());
             itemViewHolder.imgItem.setImageBitmap(imageOfItem);
         }
+
 
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

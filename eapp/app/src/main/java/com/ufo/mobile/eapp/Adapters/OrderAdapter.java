@@ -2,7 +2,9 @@ package com.ufo.mobile.eapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -63,8 +65,8 @@ public class OrderAdapter extends
         if(bp != null){
             orderViewHolder.imgOwner.setImageBitmap(bp);
         }
-        Bitmap bpItem = Constants.loadImageFromStorage(orderViewHolder.mContext,item.getImagePath());
-        if(bpItem != null){
+        Bitmap bpItem = Constants.loadImageFromStorage(orderViewHolder.mContext, item.getImagePath());
+        if (bpItem != null) {
             orderViewHolder.imgItem.setImageBitmap(bpItem);
         }
 

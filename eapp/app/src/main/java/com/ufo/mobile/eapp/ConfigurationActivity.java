@@ -34,7 +34,9 @@ import ModelManager.User;
 import Utils.Constants;
 
 import static com.ufo.mobile.eapp.MainActivity.RESULT_LOAD_IMG_ITEM;
+import static com.ufo.mobile.eapp.MainActivity.RESULT_LOAD_IMG_ITEM_CAMARA;
 import static com.ufo.mobile.eapp.MainActivity.RESULT_LOAD_IMG_USER;
+import static com.ufo.mobile.eapp.MainActivity.RESULT_LOAD_IMG_USER_CAMARA;
 
 public class ConfigurationActivity extends AppCompatActivity {
 
@@ -51,6 +53,7 @@ public class ConfigurationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configuration);
+        Constants.setLayoutOrientation(this);
         //Set back button on action bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -178,7 +181,7 @@ public class ConfigurationActivity extends AppCompatActivity {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                         createItemDialog.setImageBitmap(bitmap);
                     } catch (IOException e) {
-                        Log.e("TAG", "Some exception " + e);
+                        Log.e("RESULT_LOAD_IMG_ITEM", e.getMessage());
                     }
                     break;
                 case RESULT_LOAD_IMG_USER:
@@ -187,7 +190,23 @@ public class ConfigurationActivity extends AppCompatActivity {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUser);
                         createUserDialog.setImageBitmap(bitmap);
                     } catch (IOException e) {
-                        Log.e("TAG", "Some exception " + e);
+                        Log.e("RESULT_LOAD_IMG_USER", e.getMessage());
+                    }
+                    break;
+                case RESULT_LOAD_IMG_ITEM_CAMARA:
+                    try {
+                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                        createItemDialog.setImageBitmap(bitmap);
+                    } catch (Exception e) {
+                        Log.e("RESULT_IMG_ITEM_CAMARA", e.getMessage());
+                    }
+                    break;
+                case RESULT_LOAD_IMG_USER_CAMARA:
+                    try {
+                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                        createUserDialog.setImageBitmap(bitmap);
+                    } catch (Exception e) {
+                        Log.e("RESULT_IMG_USER_CAMARA", e.getMessage());
                     }
                     break;
             }

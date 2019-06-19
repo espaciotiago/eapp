@@ -174,6 +174,7 @@ public class ChartsActivity extends AppCompatActivity {
             super.onPostExecute(list);
             setPieChartData(list);
             if(list != null && list.size() > 0) {
+                selectedArea = areas.get(0);
                 setUpSelectedAreaView((PieEntry) list.get(0));
             }
         }

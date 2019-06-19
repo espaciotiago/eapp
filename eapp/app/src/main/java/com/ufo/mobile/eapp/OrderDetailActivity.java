@@ -1,7 +1,9 @@
 package com.ufo.mobile.eapp;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,7 +28,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class OrderDetailActivity extends AppCompatActivity {
 
-    public static int REQUEST_SIGNATURE = 1;
+    public final static int REQUEST_SIGNATURE = 1;
 
     private Order order;
     private Item item;
@@ -38,8 +40,8 @@ public class OrderDetailActivity extends AppCompatActivity {
     //UI Elements
     private EditText editQty;
     private EditText editComments;
-    private TextView txtTouchToSign;
-    private ImageView imgSign;
+    private TextView txtTouchToSign,txtSingnAut;
+    private ImageView imgSign,imgSignAut;
     private Button btnNewOrder;
     //Item
     private TextView txtItemName;
@@ -69,10 +71,12 @@ public class OrderDetailActivity extends AppCompatActivity {
         txtItemName = (TextView) findViewById(R.id.txt_item_name);
         txtItemReference = (TextView) findViewById(R.id.txt_item_ref);
         txtItemStock = (TextView) findViewById(R.id.txt_item_stock);
+        txtSingnAut = (TextView) findViewById(R.id.txt_sign_aut);
         txtOwnerName = (TextView) findViewById(R.id.txt_owner_name);
         imgItem = (ImageView) findViewById(R.id.img_item);
         imgSign = (ImageView) findViewById(R.id.img_sign);
         imgOwner = (CircleImageView) findViewById(R.id.img_owner);
+        imgSignAut = findViewById(R.id.img_sign_aut);
         btnNewOrder = (Button) findViewById(R.id.btn_new_order);
 
         //Set UI
@@ -143,10 +147,11 @@ public class OrderDetailActivity extends AppCompatActivity {
             txtItemName.setText(item.getName());
             txtItemReference.setText(item.getReference());
             txtItemStock.setText(String.valueOf(item.getStock()));
-            Bitmap itemBitmap = Constants.loadImageFromStorage(this,item.getImagePath());
-            if(itemBitmap != null){
+            Bitmap itemBitmap = Constants.loadImageFromStorage(this, item.getImagePath());
+            if (itemBitmap != null) {
                 imgItem.setImageBitmap(itemBitmap);
             }
+
         }
         //Set owner info
         if(owner != null){
@@ -168,6 +173,15 @@ public class OrderDetailActivity extends AppCompatActivity {
                 imgSign.setVisibility(View.VISIBLE);
                 txtTouchToSign.setVisibility(View.GONE);
                 btnNewOrder.setVisibility(View.GONE);
+            }
+        }
+        // Is has authorization sign
+        if(order.getAutorizationSignImage() != null && !order.getAutorizationSignImage().isEmpty()){
+            Bitmap bp = Constants.loadImageFromStorage(this,order.getAutorizationSignImage());
+            if(bp != null){
+                imgSignAut.setImageBitmap(bp);
+                imgSignAut.setVisibility(View.VISIBLE);
+                txtSingnAut.setVisibility(View.VISIBLE);
             }
         }
     }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">eapp</string>
+    <string name="app_name">A-EPPS</string>
     <string name="login">Iniciar Sesion</string>
     <string name="logout">Cerrar Sesion</string>
     <string name="signup_btn">Registrar</string>
@@ -17,7 +17,7 @@
     <string name="search">Buscar un item</string>
     <string name="search_user">Buscar un usuario...</string>
     <string name="list">Lista de ordenes</string>
-    <string name="add_user">Agregar un usuario nuevo</string>
+    <string name="add_user">Agregar un usuario</string>
     <string name="add_item">Crear un nuevo item</string>
     <string name="add_area">Crear una nueva area</string>
     <string name="add_section">Crear una nueva sección</string>
@@ -31,6 +31,7 @@
     <string name="canel">Cancelar</string>
     <string name="save">Guardar</string>
     <string name="sign">Firma</string>
+    <string name="sign_aut">Firma de supervisor</string>
     <string name="save_sign">Guardar firma</string>
     <string name="touch_to_sign">Toque aqui para solicitar firma</string>
     <string name="comments">Comentarios</string>
@@ -52,4 +53,8 @@
     <string name="qty_specific">Cantidad permitida en un periodo de tiempo</string>
     <string name="each_days">Periodo de tiempo en días</string>
     <string name="succesfully_created">Nuevo registro creado</string>
+    <string name="gallery">Desde galeria</string>
+    <string name="take_picture">Tomar una foto</string>
+    <string name="add_image_title">Añadir una imagen</string>
+    <string name="add_image_body">¿Cómo desea realizar esta acción?</string>
 </resources>
