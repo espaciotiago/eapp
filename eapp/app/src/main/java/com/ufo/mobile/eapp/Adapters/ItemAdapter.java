@@ -69,7 +69,6 @@ public class ItemAdapter extends
             }
         });
     }
-
     @Override
     public int getItemCount() {
         return items.size();

@@ -15,6 +15,7 @@ import java.util.List;
 import ModelManager.DaoSession;
 import ModelManager.Order;
 import ModelManager.User;
+import Utils.Constants;
 
 public class OrdersActivity extends AppCompatActivity {
 
@@ -30,7 +31,7 @@ public class OrdersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders);
-
+        Constants.setLayoutOrientation(this);
         //Set back button on action bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

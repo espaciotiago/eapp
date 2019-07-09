@@ -44,6 +44,7 @@ import ModelManager.OrderDao;
 import ModelManager.Section;
 import ModelManager.User;
 import ModelManager.UserDao;
+import Utils.Constants;
 
 public class ChartsActivity extends AppCompatActivity {
 
@@ -60,6 +61,7 @@ public class ChartsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_charts);
+        Constants.setLayoutOrientation(this);
 
         daoSession = ((DaoApp)getApplication()).getDaoSession();
 

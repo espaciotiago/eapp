@@ -129,9 +129,14 @@ public class NewOrderActivity extends AppCompatActivity {
             public void onClick(View v) {
                 createUserDialog = new CreateUserDialog(getApplication(),NewOrderActivity.this, new CreateUserCallback() {
                     @Override
-                    public void createUserCallback(User user) {
-                        daoSession.getUserDao().insert(user);
-                        users.add(user);
+                    public void createUserCallback(User user,boolean isNew) {
+                        if(isNew) {
+                            daoSession.getUserDao().insert(user);
+                            users.add(user);
+                        }else{
+                            daoSession.getUserDao().update(user);
+                            users = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Type.eq(User.REGULAR_USER)).list();
+                        }
                         if(createUserDialog != null && createUserDialog.isShowing()){
                             createUserDialog.dismiss();
                         }

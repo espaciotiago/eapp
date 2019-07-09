@@ -24,6 +24,8 @@ import com.ufo.mobile.eapp.DaoApp;
 import com.ufo.mobile.eapp.MainActivity;
 import com.ufo.mobile.eapp.R;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +34,7 @@ import ModelManager.Area;
 import ModelManager.DaoSession;
 import ModelManager.Section;
 import ModelManager.User;
+import ModelManager.UserDao;
 import Utils.Constants;
 
 public class CreateUserDialog extends Dialog {
@@ -150,8 +153,8 @@ public class CreateUserDialog extends Dialog {
      * Saves a new item
      */
     private void saveUser(){
-        String identification = editIdentification.getText().toString();
-        String name = editName.getText().toString();
+        final String identification = editIdentification.getText().toString();
+        final String name = editName.getText().toString();
         String imagePath = "";
         if(selectedImage != null){
             imagePath = Constants.saveImageOnStorage(mContext,selectedImage);
@@ -162,20 +165,61 @@ public class CreateUserDialog extends Dialog {
                 selectedArea != null &&
                 selectedSection != null &&
                 !imagePath.isEmpty()){
-            User userToCreate = new User();
-            userToCreate.setIdentification(identification);
-            userToCreate.setName(name);
-            userToCreate.setArea(selectedArea.getName());
-            userToCreate.setAreaId(selectedArea.getId());
-            userToCreate.setSection(selectedSection.getName());
-            userToCreate.setSectionId(selectedSection.getId());
-            userToCreate.setType(User.REGULAR_USER);
-            userToCreate.setImage(imagePath);
-            userToCreate.setCreationDate(new Date());
-            callback.createUserCallback(userToCreate);
+            final User userWithName = userExistWithName(name);
+            if(userWithName != null){
+                final String finalImagePath = imagePath;
+                new AlertDialog.Builder(mContext)
+                        .setTitle(mContext.getResources().getString(R.string.user_already_exists))
+                        .setMessage(mContext.getResources().getString(R.string.add_image_body))
+                        .setPositiveButton(R.string.update_existent, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                userWithName.setIdentification(identification);
+                                userWithName.setName(name);
+                                userWithName.setArea(selectedArea.getName());
+                                userWithName.setAreaId(selectedArea.getId());
+                                userWithName.setSection(selectedSection.getName());
+                                userWithName.setSectionId(selectedSection.getId());
+                                userWithName.setType(User.REGULAR_USER);
+                                userWithName.setImage(finalImagePath);
+                                userWithName.setCreationDate(new Date());
+                                callback.createUserCallback(userWithName, false);
+                            }
+                        })
+                        .setNeutralButton(R.string.create_new, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                User userToCreate = createUser(identification,name, finalImagePath);
+                                callback.createUserCallback(userToCreate, true);
+                            }
+                        })
+                        .show();
+            }else{
+                User userToCreate = createUser(identification,name,imagePath);
+                callback.createUserCallback(userToCreate, true);
+            }
         }else{
             Toast.makeText(mContext,mContext.getResources().getString(R.string.fill_the_fields),Toast.LENGTH_LONG).show();
         }
+    }
+
+    /**
+     *
+     * @param identification
+     * @param name
+     * @param imagePath
+     * @return
+     */
+    private User createUser(String identification,String name,String imagePath){
+        User userToCreate = new User();
+        userToCreate.setIdentification(identification);
+        userToCreate.setName(name);
+        userToCreate.setArea(selectedArea.getName());
+        userToCreate.setAreaId(selectedArea.getId());
+        userToCreate.setSection(selectedSection.getName());
+        userToCreate.setSectionId(selectedSection.getId());
+        userToCreate.setType(User.REGULAR_USER);
+        userToCreate.setImage(imagePath);
+        userToCreate.setCreationDate(new Date());
+        return userToCreate;
     }
 
     /**
@@ -240,4 +284,18 @@ public class CreateUserDialog extends Dialog {
 
         return areas;
     }
+
+    /**
+     *
+     * @param param
+     * @return
+     */
+     private User userExistWithName(String param){
+         List<User> us = daoSession.getUserDao().queryBuilder()
+                 .where(UserDao.Properties.Name.eq(param)).list();
+         if(us.size() > 0){
+             return us.get(0);
+         }
+         return null;
+     }
 }

@@ -55,6 +55,9 @@
     <string name="succesfully_created">Nuevo registro creado</string>
     <string name="gallery">Desde galeria</string>
     <string name="take_picture">Tomar una foto</string>
+    <string name="user_already_exists">Un usuario con ese nombre ya existe en la base de datos</string>
+    <string name="update_existent">Actualizar existente</string>
+    <string name="create_new">Crear nuevo</string>
     <string name="add_image_title">Añadir una imagen</string>
     <string name="add_image_body">¿Cómo desea realizar esta acción?</string>
 </resources>

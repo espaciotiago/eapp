@@ -119,8 +119,12 @@ public class ConfigurationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 createUserDialog = new CreateUserDialog(getApplication(),ConfigurationActivity.this, new CreateUserCallback() {
                     @Override
-                    public void createUserCallback(User user) {
-                        daoSession.getUserDao().insert(user);
+                    public void createUserCallback(User user, boolean isNew) {
+                        if(isNew) {
+                            daoSession.getUserDao().insert(user);
+                        }else{
+                            daoSession.getUserDao().update(user);
+                        }
                         if(createUserDialog != null && createUserDialog.isShowing()){
                             createUserDialog.dismiss();
                         }
