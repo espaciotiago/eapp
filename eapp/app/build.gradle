@@ -39,7 +39,7 @@ android {
 }
 
 greendao {
-    schemaVersion 9
+    schemaVersion 10
     //daoPackage "com.ufo.mobile.eapp"
 }
 

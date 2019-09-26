@@ -55,16 +55,18 @@ public class OrderAdapter extends
     public void onBindViewHolder(@NonNull final OrderViewHolder orderViewHolder, int i) {
         final Order order = orders.get(i);
         Item item = daoSession.getItemDao().queryBuilder().where(ItemDao.Properties.Id.eq(order.getItem())).unique();
-        User owner = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Id.eq(order.getOwner())).unique();
+        if(order.getOwner() != null && order.getOwner() >= 0) {
+            User owner = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Id.eq(order.getOwner())).unique();
+            Bitmap bp = Constants.loadImageFromStorage(orderViewHolder.mContext, owner.getImage());
+            if (bp != null) {
+                orderViewHolder.imgOwner.setImageBitmap(bp);
+            }
+        }
 
         orderViewHolder.txtName.setText(item.getName() + "-" + item.getReference());
         orderViewHolder.txtNumber.setText(String.valueOf(order.getId()));
         orderViewHolder.txtDate.setText(Constants.formatDate(order.getCreationDate()));
 
-        Bitmap bp = Constants.loadImageFromStorage(orderViewHolder.mContext,owner.getImage());
-        if(bp != null){
-            orderViewHolder.imgOwner.setImageBitmap(bp);
-        }
         Bitmap bpItem = Constants.loadImageFromStorage(orderViewHolder.mContext, item.getImagePath());
         if (bpItem != null) {
             orderViewHolder.imgItem.setImageBitmap(bpItem);

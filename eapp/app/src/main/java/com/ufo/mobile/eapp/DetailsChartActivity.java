@@ -102,7 +102,7 @@ public class DetailsChartActivity extends AppCompatActivity {
     private void setUpItemSelected(BarEntry e, Item item){
         String label = barChart.getXAxis().getValueFormatter().getFormattedValue(e.getX(), barChart.getXAxis());
         txtTotal.setText(e.getY()+"");
-        txtItemTitle.setText(label);
+        txtItemTitle.setText(item.getName());
         Bitmap bp = Constants.loadImageFromStorage(this,item.getImagePath());
         if (bp != null){
             imgItem.setImageBitmap(bp);
@@ -125,7 +125,7 @@ public class DetailsChartActivity extends AppCompatActivity {
         barChart.getAxisRight().setDrawGridLines(false);
         barChart.getAxisRight().setEnabled(false);
         barChart.setDescription(description);
-        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
+        //barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
         barChart.setData(data);
         barChart.invalidate();
     }
@@ -146,8 +146,12 @@ public class DetailsChartActivity extends AppCompatActivity {
         protected ArrayList<BarEntry> doInBackground(DaoSession... session) {
             DaoSession daoSession = session[0];
             ArrayList entries = new ArrayList<BarEntry>();
+
+            /*
+            //Map the items of the orders with users of this area
             List<User> owners = daoSession.getUserDao().queryBuilder()
                     .where(UserDao.Properties.AreaId.eq(area.getId())).list();
+
             for(int i= 0; i < owners.size();i++){
                 User user = owners.get(i);
                 List<Order> orders = daoSession.getOrderDao().queryBuilder()
@@ -168,6 +172,24 @@ public class DetailsChartActivity extends AppCompatActivity {
                 }
             }
 
+            //Map the items of the orders related to this area
+            List<Order> ordersFromArea = daoSession.getOrderDao().queryBuilder()
+                    .where(OrderDao.Properties.AreaOwner.eq(area.getId())).list();
+
+            for (int i = 0; i < ordersFromArea.size(); i ++){
+                Order order = ordersFromArea.get(i);
+                Item item = daoSession.getItemDao().queryBuilder()
+                        .where(ItemDao.Properties.Id.eq(order.getItem())).unique();
+                if(itemsMap.containsKey(item)){
+                    Double qty = itemsMap.get(item).doubleValue() + order.getQty();
+                    itemsMap.replace(item,qty);
+                }else{
+                    itemsMap.put(item,order.getQty());
+                    items.add(item);
+                }
+            }
+
+            //Map the items on a entry map fot the charts
             int i = 0;
             for (Map.Entry<Item, Double> entry : itemsMap.entrySet()) {
                 Item item = entry.getKey();
@@ -177,6 +199,15 @@ public class DetailsChartActivity extends AppCompatActivity {
                 entries.add(entryBar);
                 labels.add(item.getName());
                 i++;
+            }
+            */
+            items = daoSession.getItemDao().loadAll();
+            for(int i = 0; i < items.size()/2; i++){
+                Item item = items.get(i);
+                int count = (int)((Math.random() * ((30 - 1) + 1)) + 1);
+                BarEntry entryBar = new BarEntry(i,count,item.getName());
+                entries.add(entryBar);
+                labels.add(item.getName());
             }
 
             return entries;

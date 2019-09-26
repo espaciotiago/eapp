@@ -20,11 +20,15 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ufo.mobile.eapp.Adapters.AreaAdapter;
+import com.ufo.mobile.eapp.Adapters.AreaSelectedCallback;
 import com.ufo.mobile.eapp.Adapters.UserAdapter;
 import com.ufo.mobile.eapp.Adapters.UserSelectedCallback;
 import com.ufo.mobile.eapp.Dialogs.CreateUserCallback;
@@ -35,6 +39,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ModelManager.Area;
+import ModelManager.AreaDao;
 import ModelManager.DaoSession;
 import ModelManager.Item;
 import ModelManager.ItemDao;
@@ -55,19 +61,24 @@ public class NewOrderActivity extends AppCompatActivity {
 
     private Item item;
     private User owner;
+    private Area areaOwner;
     private List<User> users = new ArrayList<>();
+    private List<Area> areas = new ArrayList<>();
     private DaoSession daoSession;
     private String signImagePath;
     private Order orderToCreate = new Order();
+    private boolean isForArea;
 
     //UI Elements
     private RecyclerView recyclerUsers;
     private RecyclerView.LayoutManager layoutManager;
     private UserAdapter userAdapter;
+    private AreaAdapter areaAdapter;
     private EditText editQty, editComments, editSearchUser;
     private TextView txtAddNewUser;
     private Button btnNewOrder,btnNewOrderGrand;
     private View viewUsers;
+    private CheckBox chxForArea;
     // Owner preview UI
     private View viewOwner;
     private CircleImageView imgOwner;
@@ -96,6 +107,7 @@ public class NewOrderActivity extends AppCompatActivity {
             item = daoSession.getItemDao().queryBuilder().where(ItemDao.Properties.Id.eq(itemId)).unique();
         }
         users = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Type.eq(User.REGULAR_USER)).list();
+        areas = daoSession.getAreaDao().loadAll();
 
         //UI Elements
         editQty = findViewById(R.id.edit_qty);
@@ -112,6 +124,7 @@ public class NewOrderActivity extends AppCompatActivity {
         txtAddNewUser = findViewById(R.id.txt_add_new_user);
         btnNewOrder = findViewById(R.id.btn_new_order);
         btnNewOrderGrand = findViewById(R.id.btn_new_order_grand);
+        chxForArea = findViewById(R.id.chx_for_area);
         layoutManager = new LinearLayoutManager(this);
         recyclerUsers = findViewById(R.id.recycler_users);
         recyclerUsers.setLayoutManager(layoutManager);
@@ -170,8 +183,13 @@ public class NewOrderActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                List<User> usersSearched = searchUsers(s.toString());
-                setRecycler(usersSearched);
+                if(isForArea){
+                    List<Area> areasSearched = searchArea(s.toString());
+                    setRecyclerForAreas(areasSearched);
+                }else{
+                    List<User> usersSearched = searchUsers(s.toString());
+                    setRecycler(usersSearched);
+                }
             }
 
             @Override
@@ -180,6 +198,13 @@ public class NewOrderActivity extends AppCompatActivity {
             }
         };
         editSearchUser.addTextChangedListener(searcher);
+        chxForArea.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                isForArea = b;
+                setViewsForAreaSelection(isForArea);
+            }
+        });
     }
 
     @Override
@@ -223,13 +248,39 @@ public class NewOrderActivity extends AppCompatActivity {
                     }
                     break;
                 case  USER_SELECTION:
-                    Long userSelected = data.getLongExtra("user",-1);
-                    if(userSelected >= 0){
-                        owner = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Id.eq(userSelected)).unique();
-                        setOwnerPreview(owner);
+                    if(isForArea){
+                        Long areaSelected = data.getLongExtra("area",-1);
+                        if(areaSelected >= 0){
+                            areaOwner = daoSession.getAreaDao().queryBuilder().where(AreaDao.Properties.Id.eq(areaSelected)).unique();
+                            setOwnerAreaPreview(areaOwner);
+                        }
+                    }else{
+                        Long userSelected = data.getLongExtra("user",-1);
+                        if(userSelected >= 0){
+                            owner = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Id.eq(userSelected)).unique();
+                            setOwnerPreview(owner);
+                        }
                     }
                     break;
             }
+    }
+    /**
+     * --------------------------------------------------------------------
+     */
+    private void setViewsForAreaSelection(boolean isForArea){
+        if(isForArea){
+            owner = null;
+            setRecyclerForAreas(areas);
+            txtAddNewUser.setVisibility(View.GONE);
+            editSearchUser.setHint(getResources().getText(R.string.search_area));
+            txtOwnerName.setText(getResources().getText(R.string.add_a_area));
+        }else{
+            areaOwner = null;
+            setRecycler(users);
+            txtAddNewUser.setVisibility(View.VISIBLE);
+            editSearchUser.setHint(getResources().getText(R.string.search_user));
+            txtOwnerName.setText(getResources().getText(R.string.add_user));
+        }
     }
 
     /**
@@ -243,6 +294,7 @@ public class NewOrderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(NewOrderActivity.this,UserSearchActivity.class);
+                intent.putExtra("isForArea",isForArea);
                 startActivityForResult(intent, USER_SELECTION);
             }
         });
@@ -262,6 +314,22 @@ public class NewOrderActivity extends AppCompatActivity {
             }
         });
         recyclerUsers.setAdapter(userAdapter);
+    }
+
+    /**
+     * --------------------------------------------------------------------
+     * @param areas
+     */
+    private void setRecyclerForAreas(List<Area> areas){
+        //Set adapter
+        areaAdapter = new AreaAdapter(areas, new AreaSelectedCallback() {
+            @Override
+            public void AreaSelectedCallback(Area area) {
+                areaOwner = area;
+                setOwnerAreaPreview(areaOwner);
+            }
+        });
+        recyclerUsers.setAdapter(areaAdapter);
     }
 
     /**
@@ -294,6 +362,18 @@ public class NewOrderActivity extends AppCompatActivity {
 
     /**
      * --------------------------------------------------------------------
+     * @param area
+     */
+    private void setOwnerAreaPreview(Area area){
+        if(area != null) {
+            txtOwnerName.setText(area.getName());
+            imgOwner.setVisibility(View.INVISIBLE);
+            viewOwner.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * --------------------------------------------------------------------
      * @param search
      * @return
      */
@@ -309,6 +389,22 @@ public class NewOrderActivity extends AppCompatActivity {
         }
         return usersList;
     }
+    /**
+     * --------------------------------------------------------------------
+     * @param search
+     * @return
+     */
+    private List<Area> searchArea(String search){
+        ArrayList<Area> areaList = new ArrayList<>();
+
+        for(int i = 0; i < areas.size(); i ++){
+            Area u = areas.get(i);
+            if(u.getName().toLowerCase().contains(search.toLowerCase())){
+                areaList.add(u);
+            }
+        }
+        return areaList;
+    }
 
     /**
      * --------------------------------------------------------------------
@@ -317,14 +413,19 @@ public class NewOrderActivity extends AppCompatActivity {
         String qtyStr = editQty.getText().toString();
         String comments = editComments.getText().toString();
 
-        if(!qtyStr.isEmpty() && !comments.isEmpty() && owner != null && item != null){
+        if(!qtyStr.isEmpty() && !comments.isEmpty() && item != null && (owner != null || areaOwner != null)){
             try{
                 double qty = Double.parseDouble(qtyStr);
                 if(qty <= item.getStock()) {
                     boolean continueToCreate = true;
 
                     orderToCreate = new Order();
-                    orderToCreate.setOwner(owner.getId());
+                    if(owner != null) {
+                        orderToCreate.setOwner(owner.getId());
+                    }
+                    if(areaOwner != null){
+                        orderToCreate.setAreaOwner(areaOwner.getId());
+                    }
                     orderToCreate.setItem(item.getId());
                     orderToCreate.setQty(qty);
                     orderToCreate.setComments(comments);

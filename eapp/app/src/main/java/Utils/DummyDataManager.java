@@ -1,20 +1,46 @@
 package Utils;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+
+import com.ufo.mobile.eapp.R;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ModelManager.AreaDao;
 import ModelManager.DaoSession;
 import ModelManager.Section;
 import ModelManager.Area;
 import ModelManager.Item;
+import ModelManager.User;
 
 public class DummyDataManager {
 
+    private int[] userDrawables = {R.drawable.user1,R.drawable.user2,R.drawable.user3,R.drawable.user4,R.drawable.user5,R.drawable.user6};
+    private String[] usersNames = {
+            "Jayda Walker",
+            "Summer-Louise Hirst",
+            "Greyson Case",
+            "Conan Halliday",
+            "Nannie Brock",
+            "Sion Mcculloch",
+            "Vihaan Mccarty",
+            "Kunal Khan",
+            "Kasper Curran",
+            "Larissa Hurley",
+    };
+
     private DaoSession daoSession;
 
-    public DummyDataManager(DaoSession daoSession){
+    private Context context;
+
+    public DummyDataManager(DaoSession daoSession,Context context){
         this.daoSession = daoSession;
+        this.context = context;
     }
 
     /**
@@ -43,6 +69,7 @@ public class DummyDataManager {
         // Insert Dummy data
         List<Long> list = createSectionsAndAreas();
         list.addAll(createItems());
+        list.addAll(createUsers());
         return list;
     }
 
@@ -647,5 +674,64 @@ public class DummyDataManager {
         daoSession.getSectionDao().update(mantenimiento);
 
         return listSections;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private List<Long> createUsers(){
+        List<Long> users = new ArrayList<>();
+
+        for (int i = 0; i < 20; i++){
+            User user1 = new User();
+            user1.setUsername("user"+users.size());
+            user1.setPassword("123");
+            user1.setIdentification("user"+users.size());
+            user1.setName(generateRandomName());
+            user1.setType(User.REGULAR_USER);
+            Area a = daoSession.getAreaDao().queryBuilder().where(AreaDao.Properties.Id.eq(genetareRandomAreaId())).unique();
+            if(a != null) {
+                user1.setAreaId(a.getId());
+                user1.setArea(a.getName());
+            }else{
+                user1.setAreaId(new Long(1));
+                user1.setArea("");
+            }
+            user1.setImage(Constants.saveImageOnStorage(context,generateRandomUserDrawable()));
+            user1.setCreationDate(new Date());
+            users.add(daoSession.getUserDao().insert(user1));
+        }
+
+        return users;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private Long genetareRandomAreaId(){
+        long areasCount = daoSession.getAreaDao().count()-1;
+        int i = (int) ((Math.random() * ((areasCount - 0) + 1)) + 0);
+
+        return new Long(i);
+    }
+
+    private String generateRandomName(){
+        long drawblesCount = usersNames.length-1;
+        int i = (int) ((Math.random() * ((drawblesCount - 0) + 1)) + 0);
+
+        return usersNames[i];
+    }
+
+    /**
+     *
+     * @return
+     */
+    private Bitmap generateRandomUserDrawable(){
+        long drawblesCount = userDrawables.length-1;
+        int i = (int) ((Math.random() * ((drawblesCount - 0) + 1)) + 0);
+        Bitmap userImg = BitmapFactory.decodeResource(context.getResources(), userDrawables[i]);
+        return userImg;
     }
 }

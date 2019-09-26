@@ -22,6 +22,8 @@ public class Order {
     private Long item;
     @Property(nameInDb = "ownerId")
     private Long owner;
+    @Property(nameInDb = "areaOwnerId")
+    private Long areaOwner;
     @Property(nameInDb = "status")
     private int status;
     @Property(nameInDb = "qty")
@@ -41,13 +43,15 @@ public class Order {
     
     public Order() {
     }
-    @Generated(hash = 1725978386)
-    public Order(Long id, Long item, Long owner, int status, double qty,
-            String comments, String userSignImage, String autorizationSignImage,
-            Date creationDate, Date estimatedDate, Date deliveryDate) {
+    @Generated(hash = 1484158855)
+    public Order(Long id, Long item, Long owner, Long areaOwner, int status,
+            double qty, String comments, String userSignImage,
+            String autorizationSignImage, Date creationDate, Date estimatedDate,
+            Date deliveryDate) {
         this.id = id;
         this.item = item;
         this.owner = owner;
+        this.areaOwner = areaOwner;
         this.status = status;
         this.qty = qty;
         this.comments = comments;
@@ -122,5 +126,11 @@ public class Order {
     }
     public void setDeliveryDate(Date deliveryDate) {
         this.deliveryDate = deliveryDate;
+    }
+    public Long getAreaOwner() {
+        return this.areaOwner;
+    }
+    public void setAreaOwner(Long areaOwner) {
+        this.areaOwner = areaOwner;
     }
 }

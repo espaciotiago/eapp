@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import java.util.Date;
 
+import ModelManager.Area;
+import ModelManager.AreaDao;
 import ModelManager.DaoSession;
 import ModelManager.Item;
 import ModelManager.ItemDao;
@@ -33,6 +35,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     private Order order;
     private Item item;
     private User owner;
+    private Area areaOwner;
     private DaoSession daoSession;
     private String signImagePath;
     private boolean isNew;
@@ -136,7 +139,12 @@ public class OrderDetailActivity extends AppCompatActivity {
             order = daoSession.getOrderDao().queryBuilder().where(OrderDao.Properties.Id.eq(orderId)).unique();
             if(order != null){
                 item = daoSession.getItemDao().queryBuilder().where(ItemDao.Properties.Id.eq(order.getItem())).unique();
-                owner = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Id.eq(order.getOwner())).unique();
+                if(order.getOwner() != null && order.getOwner() >= 0) {
+                    owner = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Id.eq(order.getOwner())).unique();
+                }
+                if(order.getAreaOwner() != null && order.getAreaOwner() >= 0){
+                    areaOwner = daoSession.getAreaDao().queryBuilder().where(AreaDao.Properties.Id.eq(order.getAreaOwner())).unique();
+                }
                 setOrderView();
             }
         }
@@ -161,6 +169,9 @@ public class OrderDetailActivity extends AppCompatActivity {
             if(ownerBitmap != null){
                 imgOwner.setImageBitmap(ownerBitmap);
             }
+        }else if(areaOwner != null){
+            txtOwnerName.setText(areaOwner.getName());
+            imgOwner.setVisibility(View.INVISIBLE);
         }
         //Set order info
         editComments.setText(order.getComments());
@@ -188,7 +199,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     }
 
     private void saveOrder(){
-        if(order != null && item != null && owner != null){
+        if(order != null && item != null && (owner != null || areaOwner != null)){
             if(signImagePath != null && !signImagePath.isEmpty()){
                 order.setStatus(Order.REQUESTED);
                 order.setUserSignImage(signImagePath);

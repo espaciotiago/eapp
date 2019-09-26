@@ -18,6 +18,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.ufo.mobile.eapp.Adapters.AreaAdapter;
+import com.ufo.mobile.eapp.Adapters.AreaSelectedCallback;
 import com.ufo.mobile.eapp.Adapters.UserAdapter;
 import com.ufo.mobile.eapp.Adapters.UserSelectedCallback;
 import com.ufo.mobile.eapp.Dialogs.CreateUserCallback;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ModelManager.Area;
 import ModelManager.DaoSession;
 import ModelManager.User;
 import ModelManager.UserDao;
@@ -39,13 +42,17 @@ import static com.ufo.mobile.eapp.OrderDetailActivity.REQUEST_SIGNATURE;
 public class UserSearchActivity extends AppCompatActivity {
 
     private User owner;
+    private Area areaOwner;
     private List<User> users = new ArrayList<>();
+    private List<Area> areas = new ArrayList<>();
     private DaoSession daoSession;
+    private boolean isForArea;
 
     //UI Elements
     private RecyclerView recyclerUsers;
     private RecyclerView.LayoutManager layoutManager;
     private UserAdapter userAdapter;
+    private AreaAdapter areaAdapter;
     private EditText editSearchUser;
     private TextView txtAddNewUser;
     private CreateUserDialog createUserDialog;
@@ -62,9 +69,11 @@ public class UserSearchActivity extends AppCompatActivity {
         //Close keyboard on touch screen
         Constants.closeKeyboardOnTouch(R.id.view_users,this);
 
+        isForArea = getIntent().getBooleanExtra("isForArea",false);
         //Get the database session
         daoSession = ((DaoApp)getApplication()).getDaoSession();
         users = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Type.eq(User.REGULAR_USER)).list();
+        areas = daoSession.getAreaDao().loadAll();
 
         //UI Elements
         editSearchUser = findViewById(R.id.edit_search);
@@ -74,7 +83,11 @@ public class UserSearchActivity extends AppCompatActivity {
         recyclerUsers.setLayoutManager(layoutManager);
 
         //Set UI
-        setRecycler(users);
+        if(isForArea) {
+            setRecyclerForAreas(areas);
+        }else{
+            setRecycler(users);
+        }
 
         //Actions
         txtAddNewUser.setOnClickListener(new View.OnClickListener() {
@@ -111,8 +124,13 @@ public class UserSearchActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                List<User> usersSearched = searchUsers(s.toString());
-                setRecycler(usersSearched);
+                if(isForArea){
+                    List<Area> areasSearched = searchArea(s.toString());
+                    setRecyclerForAreas(areasSearched);
+                }else {
+                    List<User> usersSearched = searchUsers(s.toString());
+                    setRecycler(usersSearched);
+                }
             }
 
             @Override
@@ -173,6 +191,26 @@ public class UserSearchActivity extends AppCompatActivity {
         });
         recyclerUsers.setAdapter(userAdapter);
     }
+    /**
+     * --------------------------------------------------------------------
+     * @param areas
+     */
+    private void setRecyclerForAreas(List<Area> areas){
+        //Set adapter
+        areaAdapter = new AreaAdapter(areas, new AreaSelectedCallback() {
+            @Override
+            public void AreaSelectedCallback(Area area) {
+                areaOwner = area;
+                Intent intent = new Intent();
+                intent.putExtra("area", areaOwner.getId());
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+        recyclerUsers.setAdapter(areaAdapter);
+        txtAddNewUser.setVisibility(View.GONE);
+        editSearchUser.setHint(getResources().getText(R.string.search_area));
+    }
 
     /**
      * --------------------------------------------------------------------
@@ -190,5 +228,22 @@ public class UserSearchActivity extends AppCompatActivity {
             }
         }
         return usersList;
+    }
+
+    /**
+     * --------------------------------------------------------------------
+     * @param search
+     * @return
+     */
+    private List<Area> searchArea(String search){
+        ArrayList<Area> areaList = new ArrayList<>();
+
+        for(int i = 0; i < areas.size(); i ++){
+            Area u = areas.get(i);
+            if(u.getName().toLowerCase().contains(search.toLowerCase())){
+                areaList.add(u);
+            }
+        }
+        return areaList;
     }
 }

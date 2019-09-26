@@ -152,6 +152,7 @@ public class ChartsActivity extends AppCompatActivity {
             DaoSession daoSession = session[0];
             ArrayList entriesPie = new ArrayList<PieEntry>();
             areas = session[0].getAreaDao().loadAll();
+            /*
             for(int i = 0; i < areas.size(); i++){
                 int areaCounter = 0;
                 Area area = areas.get(i);
@@ -163,7 +164,19 @@ public class ChartsActivity extends AppCompatActivity {
                             .where(OrderDao.Properties.Owner.eq(user.getId())).count();
                     areaCounter += orders;
                 }
+                Long orders = daoSession.getOrderDao().queryBuilder()
+                        .where(OrderDao.Properties.AreaOwner.eq(area.getId())).count();
+                areaCounter += orders;
+
                 PieEntry entry = new PieEntry(areaCounter,area.getName());
+                entriesPie.add(entry);
+                labelsPie.add(area.getName());
+            }
+            */
+            for (int i = 0; i < areas.size(); i++){
+                Area area = areas.get(i);
+                int count = (int)((Math.random() * ((30 - 1) + 1)) + 1);
+                PieEntry entry = new PieEntry(count,area.getName());
                 entriesPie.add(entry);
                 labelsPie.add(area.getName());
             }

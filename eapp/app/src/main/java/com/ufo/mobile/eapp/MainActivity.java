@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private DummyDataManager dummyDataManager;
     private DaoSession daoSession;
     private List<Item> items = new ArrayList<>();
-    private int numberOfRows = 4;
+    private int numberOfRows = 3;
 
     //UI Elements
     private TextView txtError;
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         //Get the database session
         daoSession = ((DaoApp)getApplication()).getDaoSession();
         items = daoSession.getItemDao().loadAll();
-        dummyDataManager = new DummyDataManager(daoSession);
+        dummyDataManager = new DummyDataManager(daoSession,this);
 
         if(!dummyDataManager.verifyDataExistence()){
             new InsertDummyData().execute(daoSession);
