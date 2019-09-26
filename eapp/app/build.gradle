@@ -60,4 +60,5 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.0'
     implementation 'com.crashlytics.sdk.android:answers:1.4.7'
+    implementation "com.github.SUPERCILEX.poi-android:poi:3.17"
 }

@@ -38,6 +38,7 @@ import ModelManager.DaoSession;
 import ModelManager.Item;
 import Utils.Constants;
 import Utils.DummyDataManager;
+import Utils.ExcelExportManager;
 
 public class MainActivity extends AppCompatActivity {
     private final static int CAMERA = 0;
@@ -92,6 +93,10 @@ public class MainActivity extends AppCompatActivity {
         setRecyclerItems(items);
         //Get Permissions
         permissionsRequest();
+
+        //TODO Test only
+        ExcelExportManager.setUpPOI();
+        ExcelExportManager.createDataSheet();
     }
 
     @Override
