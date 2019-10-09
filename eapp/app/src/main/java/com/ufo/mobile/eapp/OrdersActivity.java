@@ -12,8 +12,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.ufo.mobile.eapp.Adapters.OrderAdapter;
 import com.ufo.mobile.eapp.Adapters.UserAdapter;
@@ -30,6 +33,7 @@ import ModelManager.ItemDao;
 import ModelManager.Order;
 import ModelManager.User;
 import Utils.Constants;
+import Utils.ExcelExportManager;
 
 public class OrdersActivity extends AppCompatActivity {
 
@@ -38,6 +42,8 @@ public class OrdersActivity extends AppCompatActivity {
 
     //UI Elements
     private RecyclerView recyclerOrders;
+    private TextView txtDownload;
+    private ProgressBar loader;
     private RecyclerView.LayoutManager layoutManager;
     private OrderAdapter orderAdapter;
 
@@ -58,9 +64,26 @@ public class OrdersActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerOrders = (RecyclerView) findViewById(R.id.recycler_orders);
         recyclerOrders.setLayoutManager(layoutManager);
+        txtDownload = findViewById(R.id.txt_download);
+        loader = findViewById(R.id.loader);
 
         //Set UI
         setRecycler(orders);
+
+        //Actions
+        txtDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loader.setVisibility(View.VISIBLE);
+                txtDownload.setVisibility(View.GONE);
+                ExcelExportManager.setUpPOI();
+                ExcelExportManager.createDataSheet(daoSession,OrdersActivity.this);
+                loader.setVisibility(View.GONE);
+                txtDownload.setVisibility(View.VISIBLE);
+
+            }
+        });
+
     }
 
     @Override

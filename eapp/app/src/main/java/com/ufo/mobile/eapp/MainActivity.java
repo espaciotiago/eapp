@@ -93,10 +93,6 @@ public class MainActivity extends AppCompatActivity {
         setRecyclerItems(items);
         //Get Permissions
         permissionsRequest();
-
-        //TODO Test only
-        ExcelExportManager.setUpPOI();
-        ExcelExportManager.createDataSheet();
     }
 
     @Override

@@ -20,6 +20,7 @@
     <string name="list">Lista de ordenes</string>
     <string name="user_list">Selección</string>
     <string name="add_user">Agregar un usuario</string>
+    <string name="add_support">Soporte técnico</string>
     <string name="add_a_area">Agregar una area</string>
     <string name="add_item">Crear un nuevo item</string>
     <string name="add_area">Crear una nueva area</string>
@@ -64,4 +65,6 @@
     <string name="order_to_area">Crear pedido a un area</string>
     <string name="add_image_title">Añadir una imagen</string>
     <string name="add_image_body">¿Cómo desea realizar esta acción?</string>
+    <string name="support_title">Ponte en contacto con nosotros</string>
+    <string name="support_label">En caso de tener alguna duda, inquietu o problema técnico por favor comunicarse al número:\n\n +57 312 7531530</string>
 </resources>

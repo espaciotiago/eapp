@@ -43,7 +43,7 @@ public class ConfigurationActivity extends AppCompatActivity {
     //Logic items
     private DaoSession daoSession;
     // UI Elements
-    private View viewAddItem,viewAddUser,viewAddArea,viewAddSection,viewLogout;
+    private View viewAddItem,viewAddUser,viewAddArea,viewAddSection,viewLogout, viewSupport;
     private CreateItemDialog createItemDialog;
     private CreateUserDialog createUserDialog;
     private CreateAreaDialog createAreaDialog;
@@ -64,6 +64,7 @@ public class ConfigurationActivity extends AppCompatActivity {
         viewAddUser = (View) findViewById(R.id.view_add_user);
         viewAddItem = (View) findViewById(R.id.view_add_item);
         viewAddSection = (View) findViewById(R.id.view_add_section);
+        viewSupport = (View) findViewById(R.id.view_support);
         viewLogout = (View) findViewById(R.id.view_logout);
 
         //Actions
@@ -154,6 +155,13 @@ public class ConfigurationActivity extends AppCompatActivity {
                 createItemDialog.setCanceledOnTouchOutside(false);
                 createItemDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
                 createItemDialog.show();
+            }
+        });
+        viewSupport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ConfigurationActivity.this,SupportActivity.class);
+                startActivity(i);
             }
         });
         viewLogout.setOnClickListener(new View.OnClickListener() {
