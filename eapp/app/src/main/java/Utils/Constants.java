@@ -88,12 +88,13 @@ public class Constants {
      * @return
      */
     public static Bitmap loadImageFromStorage(Context context, String path) {
+        /*
         Bitmap image = null;
         if(path != null && !path.isEmpty()) {
             try {
                 if(path.contains("img")){
                     Resources resources = context.getResources();
-                    int resourceId = resources.getIdentifier(path,"drawable",context.getPackageName());
+                    int resourceId = resources.getIdentifier(path,"drawable",co2ntext.getPackageName());
                     Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),resourceId);
                     return bitmap;
                 }
@@ -106,6 +107,74 @@ public class Constants {
             }
         }
         return image;
+        */
+        return decodeSampledBitmapFromResource(context, path,100,100);
+    }
+
+    /**
+     * Calculate the size of a image
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    /**
+     * Decode scaled image
+     * @param context
+     * @param path
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
+    public static Bitmap decodeSampledBitmapFromResource(Context context, String path,
+                                                         int reqWidth, int reqHeight) {
+        if(path != null && !path.isEmpty()) {
+            try {
+                if(path.contains("img")){
+                    Resources resources = context.getResources();
+                    int resourceId = resources.getIdentifier(path,"drawable",context.getPackageName());
+                    // First decode with inJustDecodeBounds=true to check dimensions
+                    final BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeResource(resources, resourceId, options);
+                    // Calculate inSampleSize
+                    options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+                    // Decode bitmap with inSampleSize set
+                    options.inJustDecodeBounds = false;
+                    return BitmapFactory.decodeResource(resources, resourceId, options);
+                }
+                ContextWrapper cw = new ContextWrapper(context);
+                File path1 = cw.getDir(DIR_PHOTOS, Context.MODE_PRIVATE);
+                File f = new File(path1, path);
+                return decodeFile(f);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     /**
@@ -131,6 +200,7 @@ public class Constants {
             // Decode with inSampleSize
             BitmapFactory.Options o2 = new BitmapFactory.Options();
             o2.inSampleSize = scale;
+
             return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
         } catch (FileNotFoundException e) {}
         return null;
