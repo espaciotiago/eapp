@@ -1,6 +1,8 @@
 package com.ufo.mobile.eapp.Adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -10,10 +12,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ufo.mobile.eapp.MainActivity;
 import com.ufo.mobile.eapp.OrderDetailActivity;
+import com.ufo.mobile.eapp.OrdersActivity;
 import com.ufo.mobile.eapp.R;
 import java.util.List;
 
@@ -63,14 +69,19 @@ public class OrderAdapter extends
             }
         }
 
-        orderViewHolder.txtName.setText(item.getName() + "-" + item.getReference());
+        if(item != null) {
+            orderViewHolder.txtName.setText(item.getName() + "-" + item.getReference());
+            Bitmap bpItem = Constants.loadImageFromStorage(orderViewHolder.mContext, item.getImagePath());
+            if (bpItem != null) {
+                orderViewHolder.imgItem.setImageBitmap(bpItem);
+            }
+        }else{
+            orderViewHolder.txtName.setText("No se ha encontrado el item, pudo haber sido eliminado");
+        }
         orderViewHolder.txtNumber.setText(String.valueOf(order.getId()));
         orderViewHolder.txtDate.setText(Constants.formatDate(order.getCreationDate()));
 
-        Bitmap bpItem = Constants.loadImageFromStorage(orderViewHolder.mContext, item.getImagePath());
-        if (bpItem != null) {
-            orderViewHolder.imgItem.setImageBitmap(bpItem);
-        }
+
 
         orderViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +89,27 @@ public class OrderAdapter extends
                 Intent intent = new Intent(orderViewHolder.mContext, OrderDetailActivity.class);
                 intent.putExtra("orderId", order.getId());
                 orderViewHolder.mContext.startActivity(intent);
+            }
+        });
+
+        orderViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(orderViewHolder.mContext);
+                builder.setTitle("Cancelar orden")
+                        .setMessage("¿Estas seguro que deseas cancelar esta orden? \nEsta acción eliminara la order del sistema");
+                builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ((OrdersActivity)orderViewHolder.mContext).onDeleteOrder(order);
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
     }
@@ -92,6 +124,7 @@ public class OrderAdapter extends
         private Context mContext;
         private TextView txtName,txtNumber,txtDate;
         private CircleImageView imgOwner, imgItem;
+        private ImageButton btnDelete;
         private View statusView;
 
         public OrderViewHolder(View itemView) {
@@ -103,6 +136,7 @@ public class OrderAdapter extends
             imgOwner = (CircleImageView) itemView.findViewById(R.id.img_owner);
             imgItem = (CircleImageView) itemView.findViewById(R.id.img_item);
             statusView = (View) itemView.findViewById(R.id.status_view);
+            btnDelete = (ImageButton) itemView.findViewById(R.id.btn_delete);
         }
     }
 }

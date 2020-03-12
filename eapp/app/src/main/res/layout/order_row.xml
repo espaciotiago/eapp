@@ -91,6 +91,13 @@
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_no_image" />
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_delete"
+            android:layout_marginLeft="16dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@android:drawable/ic_menu_delete" />
     </LinearLayout>
 
     <LinearLayout

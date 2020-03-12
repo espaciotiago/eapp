@@ -1,6 +1,8 @@
 package com.ufo.mobile.eapp.Adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -11,9 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ufo.mobile.eapp.MainActivity;
 import com.ufo.mobile.eapp.NewOrderActivity;
 import com.ufo.mobile.eapp.R;
 
@@ -57,7 +61,6 @@ public class ItemAdapter extends
             itemViewHolder.imgItem.setImageBitmap(imageOfItem);
         }
 
-
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +69,27 @@ public class ItemAdapter extends
                 Intent intent = new Intent(itemViewHolder.mContext,NewOrderActivity.class);
                 intent.putExtra("itemId",item.getId());
                 itemViewHolder.mContext.startActivity(intent);
+            }
+        });
+
+        itemViewHolder.btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(itemViewHolder.mContext);
+                builder.setTitle("Acciones")
+                        .setMessage("¿Qué deseas hacer con este item?");
+                builder.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ((MainActivity)itemViewHolder.mContext).showEditDialog(item);
+                    }
+                });
+                builder.setNegativeButton("Eliminar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ((MainActivity)itemViewHolder.mContext).onDeleteItem(item);
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
     }
@@ -79,6 +103,7 @@ public class ItemAdapter extends
         private Context mContext;
         private TextView txtName,txtReference,txtStock;
         private ImageView imgItem;
+        private ImageButton btnEdit;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
@@ -87,6 +112,7 @@ public class ItemAdapter extends
             txtReference = (TextView) itemView.findViewById(R.id.txt_ref);
             txtStock = (TextView) itemView.findViewById(R.id.txt_stock);
             imgItem = (ImageView) itemView.findViewById(R.id.img_item);
+            btnEdit = itemView.findViewById(R.id.btn_edit);
         }
     }
 }

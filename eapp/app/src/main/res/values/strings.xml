@@ -23,10 +23,12 @@
     <string name="add_support">Soporte técnico</string>
     <string name="add_a_area">Agregar una area</string>
     <string name="add_item">Crear un nuevo item</string>
+    <string name="edit_item">Editar el inventario del item</string>
     <string name="add_area">Crear una nueva area</string>
     <string name="add_section">Crear una nueva sección</string>
     <string name="item_name">Nombre del item</string>
     <string name="item_reference">Referencia</string>
+    <string name="item_new_inventory">Nueva cantidad en inventario</string>
     <string name="description">Descipción</string>
     <string name="default_qty_label">Cantidad por defecto</string>
     <string name="selected_qty_label">Cantidad solicitada</string>

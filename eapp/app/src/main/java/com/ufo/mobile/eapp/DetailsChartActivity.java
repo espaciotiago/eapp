@@ -147,7 +147,6 @@ public class DetailsChartActivity extends AppCompatActivity {
             DaoSession daoSession = session[0];
             ArrayList entries = new ArrayList<BarEntry>();
 
-            /*
             //Map the items of the orders with users of this area
             List<User> owners = daoSession.getUserDao().queryBuilder()
                     .where(UserDao.Properties.AreaId.eq(area.getId())).list();
@@ -199,15 +198,6 @@ public class DetailsChartActivity extends AppCompatActivity {
                 entries.add(entryBar);
                 labels.add(item.getName());
                 i++;
-            }
-            */
-            items = daoSession.getItemDao().loadAll();
-            for(int i = 0; i < items.size()/2; i++){
-                Item item = items.get(i);
-                int count = (int)((Math.random() * ((30 - 1) + 1)) + 1);
-                BarEntry entryBar = new BarEntry(i,count,item.getName());
-                entries.add(entryBar);
-                labels.add(item.getName());
             }
 
             return entries;

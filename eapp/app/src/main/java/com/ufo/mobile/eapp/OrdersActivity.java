@@ -168,4 +168,10 @@ public class OrdersActivity extends AppCompatActivity {
         orderAdapter = new OrderAdapter(orders,daoSession);
         recyclerOrders.setAdapter(orderAdapter);
     }
+
+    public void onDeleteOrder(Order order){
+        daoSession.getOrderDao().delete(order);
+        orders = daoSession.getOrderDao().loadAll();
+        setRecycler(orders);
+    }
 }

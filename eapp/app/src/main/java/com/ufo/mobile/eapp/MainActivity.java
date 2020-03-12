@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private GridLayoutManager layoutManager;
     private ItemAdapter itemAdapter;
     private CreateItemDialog createItemDialog;
+    private EditItemDialog editItemDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,6 +167,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void showEditDialog(Item item){
+        editItemDialog = new EditItemDialog(this, item, new EditItemCallback() {
+            @Override
+            public void editItemCallback(Item item, Double value) {
+                item.setStock(value);
+                daoSession.getItemDao().update(item);
+                // Edit from recycler
+                items = daoSession.getItemDao().loadAll();
+                setRecyclerItems(items);
+
+                editItemDialog.dismiss();
+            }
+        });
+        editItemDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        editItemDialog.setContentView(R.layout.dialog_edit_item);
+        editItemDialog.setCanceledOnTouchOutside(false);
+        editItemDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        editItemDialog.show();
+    }
+
     /**
      *
      * @param items
@@ -197,6 +218,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return itemsList;
+    }
+
+    /**
+     *
+     * @param item
+     */
+    public void onDeleteItem(Item item){
+        // Remove from database
+        daoSession.getItemDao().delete(item);
+        // Remove from recycler
+        items = daoSession.getItemDao().loadAll();
+        setRecyclerItems(items);
     }
 
     @Override
