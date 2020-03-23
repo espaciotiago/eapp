@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ufo.mobile.eapp.R;
@@ -23,10 +24,17 @@ public class UserAdapter extends
 
     private List<User> users = new ArrayList<>();
     private UserSelectedCallback userSelectedCallback;
+    private boolean showDelete = false;
 
     public UserAdapter(List<User> users, UserSelectedCallback userSelectedCallback) {
         this.users = users;
         this.userSelectedCallback = userSelectedCallback;
+    }
+
+    public UserAdapter(List<User> users, UserSelectedCallback userDeletedCallback, boolean showDelete) {
+        this.users = users;
+        this.userSelectedCallback = userDeletedCallback;
+        this.showDelete = showDelete;
     }
 
     @NonNull
@@ -37,9 +45,8 @@ public class UserAdapter extends
 
         // Inflate the custom layout
         View view = inflater.inflate(R.layout.user_row, viewGroup, false);
-
-        // Return a new holder instance
         UserAdapter.UserViewHolder viewHolder = new UserAdapter.UserViewHolder(view);
+        // Return a new holder instance
         return viewHolder;
     }
 
@@ -59,6 +66,16 @@ public class UserAdapter extends
                 userSelectedCallback.userSelectedCallback(user);
             }
         });
+
+        if(showDelete){
+            userViewHolder.btnDelete.setVisibility(View.VISIBLE);
+            userViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    userSelectedCallback.userSelectedCallback(user);
+                }
+            });
+        }
     }
 
     @Override
@@ -71,12 +88,14 @@ public class UserAdapter extends
         private Context mContext;
         private TextView txtName;
         private CircleImageView imgUser;
+        private ImageButton btnDelete;
 
         public UserViewHolder(View itemView) {
             super(itemView);
             mContext = itemView.getContext();
             txtName = (TextView) itemView.findViewById(R.id.txt_name);
             imgUser = (CircleImageView) itemView.findViewById(R.id.img_user);
+            btnDelete = (ImageButton) itemView.findViewById(R.id.btn_delete);
         }
     }
 }

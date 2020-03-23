@@ -63,9 +63,11 @@ public class OrderAdapter extends
         Item item = daoSession.getItemDao().queryBuilder().where(ItemDao.Properties.Id.eq(order.getItem())).unique();
         if(order.getOwner() != null && order.getOwner() >= 0) {
             User owner = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Id.eq(order.getOwner())).unique();
-            Bitmap bp = Constants.loadImageFromStorage(orderViewHolder.mContext, owner.getImage());
-            if (bp != null) {
-                orderViewHolder.imgOwner.setImageBitmap(bp);
+            if(owner != null) {
+                Bitmap bp = Constants.loadImageFromStorage(orderViewHolder.mContext, owner.getImage());
+                if (bp != null) {
+                    orderViewHolder.imgOwner.setImageBitmap(bp);
+                }
             }
         }
 

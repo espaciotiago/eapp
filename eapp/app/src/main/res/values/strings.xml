@@ -20,6 +20,7 @@
     <string name="list">Lista de ordenes</string>
     <string name="user_list">Selección</string>
     <string name="add_user">Agregar un usuario</string>
+    <string name="manage_user">Administrar usuarios</string>
     <string name="add_support">Soporte técnico</string>
     <string name="add_a_area">Agregar una area</string>
     <string name="add_item">Crear un nuevo item</string>

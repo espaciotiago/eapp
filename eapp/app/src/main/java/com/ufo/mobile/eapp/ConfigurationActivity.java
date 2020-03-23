@@ -43,7 +43,7 @@ public class ConfigurationActivity extends AppCompatActivity {
     //Logic items
     private DaoSession daoSession;
     // UI Elements
-    private View viewAddItem,viewAddUser,viewAddArea,viewAddSection,viewLogout, viewSupport;
+    private View viewAddItem,viewAddUser,viewAddArea,viewAddSection,viewLogout, viewSupport, viewManageUsers;
     private CreateItemDialog createItemDialog;
     private CreateUserDialog createUserDialog;
     private CreateAreaDialog createAreaDialog;
@@ -63,6 +63,7 @@ public class ConfigurationActivity extends AppCompatActivity {
         viewAddArea = (View) findViewById(R.id.view_add_area);
         viewAddUser = (View) findViewById(R.id.view_add_user);
         viewAddItem = (View) findViewById(R.id.view_add_item);
+        viewManageUsers = (View) findViewById(R.id.view_manage_users);
         viewAddSection = (View) findViewById(R.id.view_add_section);
         viewSupport = (View) findViewById(R.id.view_support);
         viewLogout = (View) findViewById(R.id.view_logout);
@@ -136,6 +137,13 @@ public class ConfigurationActivity extends AppCompatActivity {
                 createUserDialog.setCanceledOnTouchOutside(false);
                 createUserDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
                 createUserDialog.show();
+            }
+        });
+        viewManageUsers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ConfigurationActivity.this, ManageUsersActivity.class);
+                startActivity(i);
             }
         });
         viewAddItem.setOnClickListener(new View.OnClickListener() {

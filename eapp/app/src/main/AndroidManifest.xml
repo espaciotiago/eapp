@@ -19,7 +19,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SupportActivity"></activity>
+        <activity android:name=".ManageUsersActivity"
+            android:label="@string/manage_user">
+        </activity>
+        <activity android:name=".SupportActivity" />
         <activity
             android:name=".UserSearchActivity"
             android:label="@string/user_list" />

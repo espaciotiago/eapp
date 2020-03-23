@@ -27,6 +27,13 @@
             android:layout_weight="1"
             android:text="TextView" />
 
+        <ImageButton
+            android:id="@+id/btn_delete"
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
+            android:background="@android:drawable/ic_menu_delete"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <LinearLayout
