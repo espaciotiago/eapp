@@ -30,6 +30,8 @@ public class Order {
     private double qty;
     @Property(nameInDb = "comments")
     private String comments;
+    @Property(nameInDb = "cause")
+    private String cause;
     @Property(nameInDb = "userSignImage")
     private String userSignImage;
     @Property(nameInDb = "autorizationSignImage")
@@ -43,9 +45,9 @@ public class Order {
     
     public Order() {
     }
-    @Generated(hash = 1484158855)
+    @Generated(hash = 946739664)
     public Order(Long id, Long item, Long owner, Long areaOwner, int status,
-            double qty, String comments, String userSignImage,
+            double qty, String comments, String cause, String userSignImage,
             String autorizationSignImage, Date creationDate, Date estimatedDate,
             Date deliveryDate) {
         this.id = id;
@@ -55,6 +57,7 @@ public class Order {
         this.status = status;
         this.qty = qty;
         this.comments = comments;
+        this.cause = cause;
         this.userSignImage = userSignImage;
         this.autorizationSignImage = autorizationSignImage;
         this.creationDate = creationDate;
@@ -132,5 +135,11 @@ public class Order {
     }
     public void setAreaOwner(Long areaOwner) {
         this.areaOwner = areaOwner;
+    }
+    public String getCause() {
+        return this.cause;
+    }
+    public void setCause(String cause) {
+        this.cause = cause;
     }
 }

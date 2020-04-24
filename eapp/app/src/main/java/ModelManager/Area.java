@@ -19,10 +19,13 @@ public class Area {
     private Long id;
     @Property(nameInDb = "name")
     private String name;
-    @Generated(hash = 2044236626)
-    public Area(Long id, String name) {
+    @Property(nameInDb = "section")
+    private Long section;
+    @Generated(hash = 2045559575)
+    public Area(Long id, String name, Long section) {
         this.id = id;
         this.name = name;
+        this.section = section;
     }
     @Generated(hash = 179626505)
     public Area() {
@@ -42,6 +45,12 @@ public class Area {
 
     public static void insertArea(Area area,Context context, Application application){
         new InsertNewArea(context,application).execute(area);
+    }
+    public Long getSection() {
+        return this.section;
+    }
+    public void setSection(Long section) {
+        this.section = section;
     }
 
     private static class InsertNewArea extends AsyncTask<Area,Integer,Long> {

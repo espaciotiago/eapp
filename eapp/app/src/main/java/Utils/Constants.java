@@ -225,6 +225,24 @@ public class Constants {
     }
 
     /**
+     * Get a formatted date
+     * @param date
+     * @return
+     */
+    public static String formatDateWithTime(Date date){
+        String dateStr = "";
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            dateStr = dateFormat.format(date);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return dateStr;
+    }
+
+    /**
      * Adds days to a given date
      * @param dateToAdd
      * @param numberOfDays

@@ -21,7 +21,7 @@ public class CreateSectionDialog extends Dialog {
     private Context mContext;
     private CreateSectionCallback callback;
 
-    private EditText editName;
+    private EditText editName, editCostsCenter;
     private Button btnCancel, btnSave;
 
     public CreateSectionDialog(@NonNull Context context,final CreateSectionCallback callback) {
@@ -35,6 +35,7 @@ public class CreateSectionDialog extends Dialog {
         super.onCreate(savedInstanceState);
 
         editName = (EditText) findViewById(R.id.edit_name);
+        editCostsCenter = findViewById(R.id.edit_cost_center);
         btnCancel = (Button) findViewById(R.id.btn_cancel);
         btnSave = (Button) findViewById(R.id.btn_save);
 
@@ -55,9 +56,11 @@ public class CreateSectionDialog extends Dialog {
 
     private void saveSection(){
         String name = editName.getText().toString();
-        if (name != null && !name.isEmpty()){
+        String costs = editCostsCenter.getText().toString();
+        if (name != null && !name.isEmpty() && costs != null && !costs.isEmpty()){
             Section section = new Section();
             section.setName(name);
+            section.setCostsCenter(costs);
             callback.createSectionCallback(section);
         }else{
             Toast.makeText(mContext,mContext.getResources().getString(R.string.fill_the_fields),Toast.LENGTH_LONG).show();

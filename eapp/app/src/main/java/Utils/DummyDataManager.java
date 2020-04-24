@@ -217,52 +217,62 @@ public class DummyDataManager {
         // Section --------------------------------------------------------------------
         Section section = new Section();
         section.setName("Sección principal");
+        section.setCostsCenter("008798 - CC");
         Long spearsId = daoSession.insert(section);
         listSections.add(spearsId);
 
         // Areas ----------------------------------------------------------------------
         Area area1 = new Area();
         area1.setName("TM");
+        area1.setSection(spearsId);
         Long idarea1 = daoSession.insert(area1);
         section.setAreas(Constants.appendIdToString("",idarea1));
 
         Area area2 = new Area();
         area2.setName("RF");
+        area2.setSection(spearsId);
         Long idarea2 = daoSession.insert(area2);
         section.setAreas(Constants.appendIdToString(section.getAreas(),idarea2));
 
         Area area3 = new Area();
         area3.setName("EFLUENTES");
+        area3.setSection(spearsId);
         Long idarea3 = daoSession.insert(area3);
         section.setAreas(Constants.appendIdToString(section.getAreas(),idarea3));
 
         Area area4 = new Area();
         area4.setName("CONVERCIONES");
+        area4.setSection(spearsId);
         Long idarea4 = daoSession.insert(area4);
         section.setAreas(Constants.appendIdToString(section.getAreas(),idarea4));
 
         Area area5 = new Area();
         area5.setName("SPEARS");
+        area5.setSection(spearsId);
         Long idarea5 = daoSession.insert(area5);
         section.setAreas(Constants.appendIdToString(section.getAreas(),idarea5));
 
         Area area6 = new Area();
         area6.setName("TEKNOWEB");
+        area6.setSection(spearsId);
         Long idarea6 = daoSession.insert(area6);
         section.setAreas(Constants.appendIdToString(section.getAreas(),idarea6));
 
         Area area7 = new Area();
         area7.setName("COFORM");
+        area7.setSection(spearsId);
         Long idarea7 = daoSession.insert(area7);
         section.setAreas(Constants.appendIdToString(section.getAreas(),idarea7));
 
         Area area8 = new Area();
         area8.setName("ALMACENES");
+        area8.setSection(spearsId);
         Long idarea8 = daoSession.insert(area8);
         section.setAreas(Constants.appendIdToString(section.getAreas(),idarea8));
 
         Area area9 = new Area();
         area9.setName("CEDI");
+        area9.setSection(spearsId);
         Long idarea9 = daoSession.insert(area9);
         section.setAreas(Constants.appendIdToString(section.getAreas(),idarea9));
 

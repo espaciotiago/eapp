@@ -95,6 +95,7 @@ public class CreateAreaDialog extends Dialog {
         if(name != null && !name.isEmpty() && selectedSection != null){
             Area area = new Area();
             area.setName(name);
+            area.setSection(selectedSection.getId());
             callback.createAreaCallback(area,selectedSection);
         }else{
             Toast.makeText(mContext,mContext.getResources().getString(R.string.fill_the_fields),Toast.LENGTH_LONG).show();

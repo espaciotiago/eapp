@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="causas">
+        <item>Deterioro</item>
+        <item>Perdida</item>
+        <item>Ingreso</item>
+        <item>Otros</item>
+    </string-array>
+</resources>

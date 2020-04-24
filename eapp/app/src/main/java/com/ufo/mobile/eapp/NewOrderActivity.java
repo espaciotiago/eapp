@@ -19,11 +19,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +69,7 @@ public class NewOrderActivity extends AppCompatActivity {
     private List<Area> areas = new ArrayList<>();
     private DaoSession daoSession;
     private String signImagePath;
+    private String selectedCausa;
     private Order orderToCreate = new Order();
     private boolean isForArea;
 
@@ -79,6 +83,7 @@ public class NewOrderActivity extends AppCompatActivity {
     private Button btnNewOrder,btnNewOrderGrand;
     private View viewUsers;
     private CheckBox chxForArea;
+    private Spinner spnComments;
     // Owner preview UI
     private View viewOwner;
     private CircleImageView imgOwner;
@@ -113,6 +118,7 @@ public class NewOrderActivity extends AppCompatActivity {
         editQty = findViewById(R.id.edit_qty);
         editComments = findViewById(R.id.edit_comments);
         editSearchUser = findViewById(R.id.edit_search);
+        spnComments = findViewById(R.id.spinner_comments);
         viewOwner = findViewById(R.id.owner_view);
         viewUsers = findViewById(R.id.view_users);
         txtOwnerName = findViewById(R.id.txt_owner_name);
@@ -130,6 +136,10 @@ public class NewOrderActivity extends AppCompatActivity {
         recyclerUsers.setLayoutManager(layoutManager);
 
         //Set UI
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.causas, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnComments.setAdapter(adapter);
         if(Constants.isPortrait(this)){
             configurePortraitMode();
         }
@@ -137,6 +147,20 @@ public class NewOrderActivity extends AppCompatActivity {
         setItemPreview(item);
 
         //Actions
+        spnComments.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Resources res = getResources();
+                String[] shoppingItems = res.getStringArray(R.array.causas);
+                String selectedItem = shoppingItems[position];
+                selectedCausa = selectedItem;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         txtAddNewUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -429,6 +453,7 @@ public class NewOrderActivity extends AppCompatActivity {
                     orderToCreate.setItem(item.getId());
                     orderToCreate.setQty(qty);
                     orderToCreate.setComments(comments);
+                    orderToCreate.setCause(selectedCausa);
                     orderToCreate.setStatus(Order.CREATED);
 
                     //TODO Calcular si hay disponibilidad de cantidad cada x días

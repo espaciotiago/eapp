@@ -8,6 +8,7 @@
     <string name="password">Contraseña</string>
     <string name="identification">Ficha de usuario</string>
     <string name="name">Nombre completo</string>
+    <string name="cost_center">Centro de costos</string>
     <string name="area">Area</string>
     <string name="section">Sección</string>
     <string name="inventory">Inventario</string>

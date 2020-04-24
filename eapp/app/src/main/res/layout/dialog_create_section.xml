@@ -57,6 +57,16 @@
                 android:hint="@string/section"
                 android:padding="8dp" />
 
+            <EditText
+                android:id="@+id/edit_cost_center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/shape_white"
+                android:ems="10"
+                android:hint="@string/cost_center"
+                android:padding="8dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

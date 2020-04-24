@@ -27,6 +27,29 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/view_add_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="8dp"
+                    android:text="@string/add_section"
+                    android:textSize="@dimen/txt_size" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorAccentDark"
+                    android:orientation="vertical"></LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/view_add_area"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -108,29 +131,6 @@
                     android:layout_weight="1"
                     android:padding="8dp"
                     android:text="@string/manage_user"
-                    android:textSize="@dimen/txt_size" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccentDark"
-                    android:orientation="vertical"></LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/view_add_section"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="8dp"
-                    android:text="@string/add_section"
                     android:textSize="@dimen/txt_size" />
 
                 <LinearLayout

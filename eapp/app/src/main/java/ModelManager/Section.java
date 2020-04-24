@@ -25,12 +25,15 @@ public class Section {
     private Long id;
     @Property(nameInDb = "name")
     private String name;
+    @Property(nameInDb = "costsCenter")
+    private String costsCenter;
     @Property(nameInDb = "areas")
     private String areas; // {1,2,3} AreasIds splited by ,
-    @Generated(hash = 824869808)
-    public Section(Long id, String name, String areas) {
+    @Generated(hash = 889404185)
+    public Section(Long id, String name, String costsCenter, String areas) {
         this.id = id;
         this.name = name;
+        this.costsCenter = costsCenter;
         this.areas = areas;
     }
     @Generated(hash = 111791983)
@@ -57,6 +60,12 @@ public class Section {
 
     public static void insertSection(Section section, Context context, Application application, boolean isNew){
         new InsertNewSection(context,application,isNew).execute(section);
+    }
+    public String getCostsCenter() {
+        return this.costsCenter;
+    }
+    public void setCostsCenter(String costsCenter) {
+        this.costsCenter = costsCenter;
     }
 
     private static class InsertNewSection extends AsyncTask<Section,Integer,Long> {
