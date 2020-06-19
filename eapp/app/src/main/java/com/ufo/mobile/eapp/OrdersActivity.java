@@ -32,6 +32,7 @@ import ModelManager.Item;
 import ModelManager.ItemDao;
 import ModelManager.Order;
 import ModelManager.User;
+import ModelManager.UserDao;
 import Utils.Constants;
 import Utils.ExcelExportManager;
 
@@ -145,6 +146,16 @@ public class OrdersActivity extends AppCompatActivity {
         for (int i = 0; i < this.orders.size(); i++){
             Order order = this.orders.get(i);
             Item item = daoSession.getItemDao().queryBuilder().where(ItemDao.Properties.Id.eq(order.getItem())).unique();
+            Long userId = order.getOwner();
+            String searchingName = "";
+            String searchingId = "";
+            if(userId != null){
+                User u = daoSession.getUserDao().queryBuilder().where(UserDao.Properties.Id.eq(userId)).unique();
+                if(u != null){
+                    searchingName = u.getName();
+                    searchingId = u.getIdentification();
+                }
+            }
             if(item != null && (item.getName().toLowerCase().contains(search) || item.getReference().toLowerCase().contains(search))){
                 orders.add(order);
             }else{
@@ -155,6 +166,12 @@ public class OrdersActivity extends AppCompatActivity {
                     }
                 }catch (Exception e){
                     e.printStackTrace();
+                }
+                if(!searchingName.isEmpty() || !searchingId.isEmpty()){
+                    if(searchingName.toLowerCase().contains(search.toLowerCase()) ||
+                            searchingId.toLowerCase().contains(search.toLowerCase())){
+                        orders.add(order);
+                    }
                 }
             }
         }

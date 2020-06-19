@@ -21,12 +21,15 @@ import com.ufo.mobile.eapp.MainActivity;
 import com.ufo.mobile.eapp.OrderDetailActivity;
 import com.ufo.mobile.eapp.OrdersActivity;
 import com.ufo.mobile.eapp.R;
+
+import java.util.Date;
 import java.util.List;
 
 import ModelManager.DaoSession;
 import ModelManager.Item;
 import ModelManager.ItemDao;
 import ModelManager.Order;
+import ModelManager.OrderDao;
 import ModelManager.User;
 import ModelManager.UserDao;
 import Utils.Constants;
@@ -41,6 +44,65 @@ public class OrderAdapter extends
     public OrderAdapter(List<Order> orders, DaoSession daoSession) {
         this.orders = orders;
         this.daoSession = daoSession;
+    }
+
+    /**
+     *
+     * @param item
+     * @return
+     */
+    private String calculateNextDate(Item item, Order order){
+        String message = "";
+        double qty = order.getQty();
+        if(item.getNextAvailable()!=null){
+            if(item.getNextAvailable().compareTo(new Date()) == 1){
+                message = "No disponible hasta: " + Constants.formatDate(item.getNextAvailable());
+            }else{
+                double ordersUntilNow = calculateOrdersOfItem(item.getId(),item.getNextAvailable());
+                double requested = ordersUntilNow + qty;
+                if(requested <= item.getQtyInSpecificTime()) {
+                    if((item.getQtyInSpecificTime() - requested) == 0) {
+                        message = "No disponible hasta: " + Constants.formatDate(Constants.calculateDatePlusDays(item.getNextAvailable(), item.getEachInDays()));
+                    }
+                }else{
+                    message = "La cantidad solicitada sobrepasó la cantidad permitida hasta: " + Constants.formatDate(item.getNextAvailable());
+                }
+            }
+        }else{
+            double ordersUntilNow = calculateOrdersOfItem(item.getId(),item.getNextAvailable());
+            double requested = ordersUntilNow + qty;
+            if(requested <= item.getQtyInSpecificTime()) {
+                // Is the first time that a item is requested and get the qty permited
+                if((item.getQtyInSpecificTime() - requested) == 0) {
+                    item.setNextAvailable(Constants.calculateDatePlusDays(new Date(), item.getEachInDays()));
+                    message = "No disponible hasta: " + Constants.formatDate(Constants.calculateDatePlusDays(new Date(), item.getEachInDays()));
+                }
+            }else{
+                message = "La cantidad solicitada sobrepasó la cantidad permitida";
+            }
+        }
+        return message;
+    }
+
+    /**
+     *
+     * @param itemId
+     * @return
+     */
+    public double calculateOrdersOfItem(Long itemId, Date lastAvailable){
+        double ordersCount = 0;
+        List<Order> orders = daoSession.getOrderDao().queryBuilder().where(OrderDao.Properties.Item.eq(itemId)).list();
+        for(int i = 0; i < orders.size(); i++){
+            Order or = orders.get(i);
+            if(lastAvailable != null) {
+                if (or.getCreationDate().compareTo(lastAvailable) == 1) {
+                    ordersCount += or.getQty();
+                }
+            }else{
+                ordersCount += or.getQty();
+            }
+        }
+        return ordersCount;
     }
 
     @NonNull
@@ -82,7 +144,7 @@ public class OrderAdapter extends
         }
         orderViewHolder.txtNumber.setText(String.valueOf(order.getId()));
         orderViewHolder.txtDate.setText(Constants.formatDate(order.getCreationDate()));
-
+        orderViewHolder.txtDateAvailable.setText(calculateNextDate(item,order));
 
 
         orderViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -124,7 +186,7 @@ public class OrderAdapter extends
     public class OrderViewHolder extends RecyclerView.ViewHolder {
 
         private Context mContext;
-        private TextView txtName,txtNumber,txtDate;
+        private TextView txtName,txtNumber,txtDate,txtDateAvailable;
         private CircleImageView imgOwner, imgItem;
         private ImageButton btnDelete;
         private View statusView;
@@ -134,6 +196,7 @@ public class OrderAdapter extends
             mContext = itemView.getContext();
             txtName = (TextView) itemView.findViewById(R.id.txt_name_reference);
             txtNumber = (TextView) itemView.findViewById(R.id.txt_order_num);
+            txtDateAvailable = (TextView) itemView.findViewById(R.id.txt_date_available);
             txtDate = (TextView) itemView.findViewById(R.id.txt_date);
             imgOwner = (CircleImageView) itemView.findViewById(R.id.img_owner);
             imgItem = (CircleImageView) itemView.findViewById(R.id.img_item);
